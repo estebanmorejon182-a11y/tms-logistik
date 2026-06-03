@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Cliente · Logiztik Alliance Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#80BA27;--gd:#6FA320;--gl:#EEF7DA;
+  --s:#58585A;--w:#fff;--bg:#F0F2F4;
+  --err:#E05A2B;--warn:#F59E0B;--info:#3B82F6;
+  --txt:#2C2C2C;--muted:#888;--bd:#DDE1E7;
+  --r:12px;--rs:8px;--sh:0 1px 4px rgba(0,0,0,0.08);
+}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--txt);font-size:14px;min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:var(--s);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.tlogo{display:flex;align-items:center;gap:14px}
+.tlogo img{max-height:36px;max-width:150px;object-fit:contain}
+.tlogo-div{width:1px;height:28px;background:rgba(255,255,255,0.15)}
+.tlogo-sub{font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:1.5px;text-transform:uppercase}
+.tnav{display:flex;align-items:center;gap:2px}
+.tnav-btn{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.6);cursor:pointer;transition:all .15s;border:none;background:none;font-family:'Barlow',sans-serif;display:flex;align-items:center;gap:6px}
+.tnav-btn:hover{color:#fff;background:rgba(255,255,255,0.08)}
+.tnav-btn.on{color:#fff;background:rgba(128,186,39,0.2);font-weight:600}
+.tnav-badge{background:var(--err);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:8px;min-width:16px;text-align:center}
+.tright{display:flex;align-items:center;gap:10px}
+.tbtn2{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.7);font-size:16px;border:none;transition:all .15s;position:relative}
+.tbtn2:hover{background:rgba(255,255,255,0.2);color:#fff}
+.ndot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--err);border-radius:50%;border:1.5px solid var(--s)}
+.tuser{display:flex;align-items:center;gap:8px;cursor:pointer}
+.tav{width:34px;height:34px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.tname{font-size:12px;color:rgba(255,255,255,0.75);font-weight:500}
+@media(max-width:768px){.tnav{display:none}.tlogo-sub,.tlogo-div{display:none}}
+
+/* VIEWS */
+.view{display:none;padding:28px 32px 56px;max-width:1160px;margin:0 auto}
+.view.active{display:block}
+@media(max-width:700px){.view{padding:16px 14px 48px}}
+
+/* SECTION TITLE */
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#3A3A3A}
+.sec-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.sec-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+
+/* CARDS */
+.card{background:var(--w);border-radius:var(--r);border:1px solid var(--bd);margin-bottom:20px;box-shadow:var(--sh);overflow:hidden}
+.ch{padding:14px 20px;border-bottom:1px solid #F2F2F4;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ct{font-size:13px;font-weight:700;color:#3A3A3A;display:flex;align-items:center;gap:8px}
+.ct i{color:var(--g);font-size:15px}
+.cb{padding:18px 20px}
+
+/* WELCOME */
+.welcome{background:linear-gradient(135deg,#58585A 0%,#3D3D3F 100%);border-radius:var(--r);padding:26px 32px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;position:relative;overflow:hidden}
+.welcome::after{content:'';position:absolute;right:-50px;top:-50px;width:240px;height:240px;border-radius:50%;background:rgba(128,186,39,0.08);pointer-events:none}
+.welcome h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
+.welcome p{font-size:12px;color:rgba(255,255,255,0.55)}
+.welcome-btn{background:var(--g);color:#fff;border:none;padding:10px 22px;border-radius:9px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;z-index:1;white-space:nowrap}
+.welcome-btn:hover{background:var(--gd)}
+
+/* STAT CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+@media(max-width:700px){.stats-row{grid-template-columns:1fr 1fr}}
+.stat-card{background:var(--w);border-radius:var(--r);border:1px solid var(--bd);padding:18px 20px;box-shadow:var(--sh)}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;line-height:1}
+.sv-g{color:var(--gd)} .sv-a{color:var(--warn)} .sv-b{color:var(--info)} .sv-s{color:var(--s)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.p-nuevo{background:#F3F4F6;color:#6B7280}
+.p-aprobacion{background:rgba(128,186,39,0.12);color:var(--gd);border:1px solid rgba(128,186,39,0.3)}
+.p-reservado{background:#DBEAFE;color:#1E40AF}
+.p-espera{background:#FEF3C7;color:#92400E}
+.p-confirmado{background:#D1FAE5;color:#065F46}
+.p-transito{background:#EDE9FE;color:#4C1D95}
+.p-entregado{background:#F0FDF4;color:#14532D}
+.p-cerrado{background:#F3F4F6;color:#6B7280}
+.p-rechazada{background:rgba(224,90,43,0.1);color:var(--err)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.6px;padding:10px 18px;background:#FAFAFA;border-bottom:1px solid #F0F0F0;white-space:nowrap}
+.tbl td{padding:13px 18px;border-top:1px solid #F7F7F7;font-size:13px;vertical-align:middle}
+.tbl tr:hover td{background:#FAFFFE;cursor:pointer}
+.rnum{font-weight:700;color:var(--s);font-family:'Barlow Condensed',sans-serif;font-size:14px}
+.rsub{font-size:11px;color:var(--muted);margin-top:1px}
+.route{display:flex;align-items:center;gap:5px;font-weight:500}
+.rarr{color:var(--g);font-size:11px}
+
+/* FILTERS */
+.frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid #F5F5F7;background:#FAFAFA}
+.fsel{height:32px;border:1px solid var(--bd);border-radius:6px;padding:0 10px;font-family:'Barlow',sans-serif;font-size:12px;color:var(--s);background:var(--w);outline:none;cursor:pointer}
+.fsel:focus{border-color:var(--g)}
+.swrap{position:relative;flex:1;min-width:160px;max-width:260px}
+.swrap i{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:#bbb;font-size:13px;pointer-events:none}
+.swrap input{width:100%;height:32px;border:1px solid var(--bd);border-radius:6px;padding:0 10px 0 28px;font-family:'Barlow',sans-serif;font-size:12px;color:var(--s);background:var(--w);outline:none}
+.swrap input:focus{border-color:var(--g)}
+
+/* COTIZACIÓN PENDIENTE */
+.cot-pending{border:2px solid rgba(128,186,39,0.4);border-radius:var(--r);background:var(--gl);padding:22px;margin-bottom:20px}
+.cp-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.cp-title{font-size:15px;font-weight:700;color:#3A6010;display:flex;align-items:center;gap:8px}
+.cp-title i{font-size:20px}
+.cp-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:#fff;border-radius:9px;padding:14px 16px;margin-bottom:14px;border:1px solid rgba(128,186,39,0.2)}
+@media(max-width:600px){.cp-meta{grid-template-columns:1fr 1fr}}
+.cm-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700}
+.cm-val-g{color:var(--gd)}
+.cm-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;font-weight:600}
+.cp-desglose{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+@media(max-width:500px){.cp-desglose{grid-template-columns:1fr}}
+.cp-det{font-size:12px;color:#555}
+.cp-det strong{color:#3A3A3A}
+.cp-note{background:#fff;border-left:3px solid var(--warn);border-radius:0 8px 8px 0;padding:9px 12px;font-size:12px;color:#666;margin-bottom:16px;display:flex;gap:8px;line-height:1.5}
+.cp-note i{color:var(--warn);flex-shrink:0;margin-top:1px}
+.cp-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-aprov{background:var(--g);color:#fff;border:none;padding:11px 28px;border-radius:9px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;flex:1;justify-content:center;transition:all .15s}
+.btn-aprov:hover{background:var(--gd)}
+.btn-rechaz{background:#fff;color:var(--err);border:1.5px solid rgba(224,90,43,0.3);padding:11px 28px;border-radius:9px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;flex:1;justify-content:center;transition:all .15s}
+.btn-rechaz:hover{background:rgba(224,90,43,0.05)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0 20px;height:40px;border-radius:9px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-pri{background:var(--g);color:#fff} .btn-pri:hover{background:var(--gd)}
+.btn-sec{background:var(--w);color:var(--s);border:1px solid var(--bd)} .btn-sec:hover{background:var(--bg)}
+.abtn{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .15s;white-space:nowrap}
+.abtn-sec{background:var(--w);color:var(--s);border:1px solid var(--bd)} .abtn-sec:hover{background:var(--bg)}
+.abtn-pri{background:var(--g);color:#fff} .abtn-pri:hover{background:var(--gd)}
+
+/* BACK */
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:18px;border:none;background:none;font-family:'Barlow',sans-serif;transition:color .15s;padding:0}
+.back-btn:hover{color:var(--s)}
+
+/* TRACKER */
+.tracker-wrap{padding:8px 0 16px}
+.tracker{display:flex;align-items:flex-start}
+.trk-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative}
+.trk-step:not(:last-child)::after{content:'';position:absolute;left:50%;top:14px;width:100%;height:2px;background:var(--bd);z-index:0}
+.trk-step.done::after{background:var(--g)}
+.trk-step.cur::after{background:linear-gradient(to right,var(--g),var(--bd))}
+.trk-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--bd);background:var(--w);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;position:relative;z-index:1;flex-shrink:0}
+.trk-step.done .trk-dot{background:var(--g);border-color:var(--g);color:#fff}
+.trk-step.cur .trk-dot{background:var(--s);border-color:var(--s);color:#fff;box-shadow:0 0 0 4px rgba(88,88,90,0.15)}
+.trk-step.pend .trk-dot{color:#ddd}
+.trk-lbl{font-size:10px;font-weight:600;text-align:center;line-height:1.3}
+.trk-step.done .trk-lbl{color:var(--gd)}
+.trk-step.cur .trk-lbl{color:var(--s)}
+.trk-step.pend .trk-lbl{color:#ccc}
+.trk-date{font-size:9px;color:#bbb;text-align:center}
+
+/* DETAIL LAYOUT */
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:600px){.det-grid{grid-template-columns:1fr}}
+.det-lbl{font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.det-val{font-size:14px;font-weight:500;color:var(--txt)}
+.det-val-big{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--gd)}
+.gd2{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+@media(max-width:960px){.gd2{grid-template-columns:1fr}}
+
+/* TIMELINE */
+.tline{display:flex;flex-direction:column}
+.tl-i{display:flex;gap:12px;padding:10px 0;position:relative}
+.tl-i:not(:last-child)::before{content:'';position:absolute;left:11px;top:28px;bottom:-10px;width:1.5px;background:#EEE}
+.tl-d{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;z-index:1}
+.tl-done{background:var(--g);color:#fff} .tl-cur{background:var(--warn);color:#fff} .tl-pend{background:#F0F0F0;color:#ccc;border:1.5px solid #DDD}
+.tl-t{font-size:12px;font-weight:600;color:#3A3A3A;line-height:1.4}
+.tl-s{font-size:11px;color:var(--muted);margin-top:2px}
+.tl-dt{font-size:10px;color:#bbb;margin-top:2px}
+
+/* FORM */
+.form-sec{margin-bottom:22px}
+.form-sec-title{font-size:12px;font-weight:700;color:var(--s);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--gl);display:flex;align-items:center;gap:8px}
+.form-sec-title i{color:var(--g);font-size:14px}
+.fg{display:grid;gap:12px;margin-bottom:12px}
+.fg1{grid-template-columns:1fr}
+.fg2{grid-template-columns:1fr 1fr}
+.fg3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:600px){.fg2,.fg3{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:4px}
+.lbl{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.6px}
+.rq{color:var(--err)}
+.inp,.sel{border:1px solid var(--bd);border-radius:var(--rs);padding:0 12px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--txt);background:var(--w);outline:none;width:100%;height:38px;transition:border .15s}
+.inp:focus,.sel:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(128,186,39,0.12)}
+textarea.inp{height:84px;padding:10px 12px;resize:vertical;line-height:1.5}
+
+/* INFO BOX */
+.info-box{background:var(--gl);border:1px solid rgba(128,186,39,0.3);border-radius:8px;padding:10px 14px;font-size:12px;color:#3A6010;margin-bottom:14px;display:flex;gap:8px;line-height:1.5;align-items:flex-start}
+.info-box i{flex-shrink:0;margin-top:1px;color:var(--g)}
+.warn-box{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:10px 14px;font-size:12px;color:#78400E;margin-bottom:14px;display:flex;gap:8px;line-height:1.5;align-items:flex-start}
+.warn-box i{flex-shrink:0;margin-top:1px;color:var(--warn)}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-ov.open{display:flex}
+.modal{background:var(--w);border-radius:16px;width:100%;max-width:500px;box-shadow:0 20px 60px rgba(0,0,0,0.2);overflow:hidden}
+.modal-h{padding:18px 22px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:700;color:#3A3A3A;display:flex;align-items:center;gap:8px}
+.modal-title i{color:var(--g)}
+.modal-close{width:30px;height:30px;border-radius:7px;border:1px solid var(--bd);background:var(--w);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#999;font-size:16px}
+.modal-b{padding:22px}
+.modal-f{padding:14px 22px;border-top:1px solid var(--bd);display:flex;gap:10px;justify-content:flex-end}
+
+/* SUCCESS */
+.success-box{text-align:center;padding:28px 16px}
+.success-icon{width:60px;height:60px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px;color:var(--g)}
+.success-box h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#3A3A3A;margin-bottom:8px}
+.success-box p{font-size:13px;color:var(--muted);line-height:1.6}
+.success-box .ref{display:inline-block;margin-top:10px;background:#F7F8FA;border:1px solid var(--bd);border-radius:8px;padding:6px 16px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--s)}
+</style>
+</head>
+<body>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tlogo">
+    <img src="data:image/png;base64,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" alt="Logiztik Alliance Group">
+    <div class="tlogo-div"></div>
+    <div class="tlogo-sub">Portal Cliente</div>
+  </div>
+  <nav class="tnav">
+    <button class="tnav-btn on" id="nav-inicio" onclick="goTo('inicio')"><i class="ti ti-home"></i> Inicio</button>
+    <button class="tnav-btn" id="nav-reservas" onclick="goTo('reservas')"><i class="ti ti-calendar-check"></i> Mis reservas</button>
+    <button class="tnav-btn" id="nav-solicitud" onclick="goTo('solicitud')"><i class="ti ti-plus-circle"></i> Nueva solicitud</button>
+    <button class="tnav-btn" id="nav-documentos" onclick="goTo('documentos')"><i class="ti ti-files"></i> Documentos</button>
+  </nav>
+  <div class="tright">
+    <button class="tbtn2" title="Notificaciones"><i class="ti ti-bell"></i><div class="ndot"></div></button>
+    <div class="tuser">
+      <div class="tav">FL</div>
+      <span class="tname">Florisol Cía. Ltda.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== INICIO ===== -->
+<div class="view active" id="view-inicio">
+  <div class="welcome">
+    <div style="z-index:1">
+      <h2>Bienvenida, Florisol Cía. Ltda.</h2>
+      <p>Tienes 1 cotización pendiente de aprobación · 2 reservas activas · 1 embarque en tránsito</p>
+    </div>
+    <button class="welcome-btn" onclick="goTo('solicitud')"><i class="ti ti-plus"></i> Nueva solicitud de transporte</button>
+  </div>
+
+  <!-- COTIZACIÓN PENDIENTE DE APROBACIÓN -->
+  <div class="cot-pending">
+    <div class="cp-header">
+      <div class="cp-title"><i class="ti ti-file-invoice"></i> Cotización pendiente de aprobación</div>
+      <span class="pill p-aprobacion"><i class="ti ti-clock" style="font-size:10px"></i> Requiere tu aprobación</span>
+    </div>
+    <div class="cp-meta">
+      <div><div class="cm-val cm-val-g">,312.50</div><div class="cm-lbl">Precio total (USD)</div></div>
+      <div><div class="cm-val" style="color:var(--s)">.85/kg</div><div class="cm-lbl">Tarifa por kg</div></div>
+      <div><div class="cm-val" style="color:var(--s)">1,250 kg</div><div class="cm-lbl">Peso total</div></div>
+      <div><div class="cm-val" style="color:var(--info)">15 ago 2025</div><div class="cm-lbl">Fecha de embarque</div></div>
+    </div>
+    <div class="cp-desglose">
+      <div class="cp-det"><strong>N° Cotización:</strong> COT-2025-0841</div>
+      <div class="cp-det"><strong>Ruta:</strong> GYE → MIA (Aéreo · BSA)</div>
+      <div class="cp-det"><strong>Producto:</strong> Flores frescas · 42 pallets</div>
+      <div class="cp-det"><strong>Ejecutivo:</strong> María Estrella</div>
+      <div class="cp-det"><strong>Válida hasta:</strong> 18 ago 2025</div>
+      <div class="cp-det"><strong>Carrier:</strong> Latam Cargo</div>
+    </div>
+    <div class="cp-note"><i class="ti ti-alert-triangle"></i> Esta cotización vence el <strong>18 de agosto</strong>. Si no se aprueba antes, deberá solicitarse una nueva.</div>
+    <div class="cp-actions">
+      <button class="btn-aprov" onclick="openM('m-aprobar')"><i class="ti ti-circle-check"></i> Aprobar cotización</button>
+      <button class="btn-rechaz" onclick="openM('m-rechazar')"><i class="ti ti-message-circle"></i> Solicitar ajuste</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-val sv-b">2</div><div class="stat-lbl">Reservas activas</div></div>
+    <div class="stat-card"><div class="stat-val sv-s">1</div><div class="stat-lbl">En tránsito</div></div>
+    <div class="stat-card"><div class="stat-val sv-g">8</div><div class="stat-lbl">Embarques este año</div></div>
+    <div class="stat-card"><div class="stat-val sv-a">1</div><div class="stat-lbl">Cot. por aprobar</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <!-- MIS RESERVAS ACTIVAS -->
+    <div class="card">
+      <div class="ch"><div class="ct"><i class="ti ti-calendar-check"></i> Mis reservas activas</div><button class="abtn abtn-sec" onclick="goTo('reservas')">Ver todas</button></div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Reserva</th><th>Ruta</th><th>Embarque</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr onclick="goTo('detalle-reserva')"><td><div class="rnum">RES-2025-0718</div><div class="rsub">800 kg · Brócoli</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div></td><td>28 jul 2025</td><td><span class="pill p-espera">Esp. carrier</span></td></tr>
+          <tr onclick="goTo('detalle-reserva')"><td><div class="rnum">RES-2025-0689</div><div class="rsub">1,050 kg · Rosas</div></td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div></td><td>15 jul 2025</td><td><span class="pill p-transito">En tránsito</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <!-- ACTIVIDAD -->
+    <div class="card">
+      <div class="ch"><div class="ct"><i class="ti ti-activity"></i> Actividad reciente</div></div>
+      <div style="padding:6px 0">
+        <div class="tl-i" style="padding:12px 20px;border-bottom:1px solid #F7F7F7"><div class="tl-d tl-done"><i class="ti ti-check" style="font-size:9px"></i></div><div><div class="tl-t">Cotización COT-2025-0841 recibida</div><div class="tl-s">GYE→MIA · 1,250 kg · ,312.50</div><div class="tl-dt">Hoy · 08:30</div></div></div>
+        <div class="tl-i" style="padding:12px 20px;border-bottom:1px solid #F7F7F7"><div class="tl-d tl-done"><i class="ti ti-check" style="font-size:9px"></i></div><div><div class="tl-t">Reserva RES-2025-0689 confirmada por carrier</div><div class="tl-s">Latam Cargo · AWB 004-98765432</div><div class="tl-dt">Ayer · 14:20</div></div></div>
+        <div class="tl-i" style="padding:12px 20px;border-bottom:1px solid #F7F7F7"><div class="tl-d tl-cur"><i class="ti ti-clock" style="font-size:9px"></i></div><div><div class="tl-t" style="color:var(--warn)">RES-2025-0718 esperando confirmación carrier</div><div class="tl-s">Proceso spot activo · Latam Cargo</div><div class="tl-dt">12 jul · 09:14</div></div></div>
+        <div class="tl-i" style="padding:12px 20px"><div class="tl-d tl-done"><i class="ti ti-check" style="font-size:9px"></i></div><div><div class="tl-t">Solicitud SOL-2025-0044 recibida por Logiztik</div><div class="tl-s">UIO→MIA · Rosas 980 kg</div><div class="tl-dt">08 jul · 10:22</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MIS RESERVAS ===== -->
+<div class="view" id="view-reservas">
+  <div class="sec-head">
+    <div><div class="sec-title">Mis reservas</div><div class="sec-sub">Historial y estado de todos tus embarques</div></div>
+    <button class="btn btn-pri" onclick="goTo('solicitud')"><i class="ti ti-plus"></i> Nueva solicitud</button>
+  </div>
+  <div class="card">
+    <div class="frow">
+      <div class="swrap"><i class="ti ti-search"></i><input type="text" placeholder="Buscar por N°, producto, ruta..."></div>
+      <select class="fsel"><option>Todos los estados</option><option>Esp. confirmación</option><option>Confirmado</option><option>En tránsito</option><option>Entregado</option><option>Cerrado</option></select>
+      <select class="fsel"><option>Toda modalidad</option><option>Aérea</option><option>Marítima</option><option>Terrestre</option></select>
+      <select class="fsel"><option>Últimos 6 meses</option><option>Este año</option><option>2024</option></select>
+    </div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>N° Reserva</th><th>Ruta</th><th>Producto / Carga</th><th>Embarque</th><th>Carrier</th><th>AWB / BL</th><th>Estado</th><th>Acción</th></tr></thead>
+      <tbody>
+        <tr onclick="goTo('detalle-reserva')"><td><div class="rnum">RES-2025-0718</div><div class="rsub">28 jul 2025</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div><div class="rsub">Aéreo · Spot</div></td><td>Brócoli congelado<br><span class="rsub">800 kg · 20 cajas</span></td><td>28 jul 2025</td><td>Latam Cargo</td><td><span style="color:var(--warn);font-weight:700;font-size:12px">Pendiente</span></td><td><span class="pill p-espera"><i class="ti ti-hourglass" style="font-size:10px"></i> Esp. carrier</span></td><td><button class="abtn abtn-sec" onclick="goTo('detalle-reserva')"><i class="ti ti-eye"></i> Ver</button></td></tr>
+        <tr onclick="goTo('detalle-reserva')"><td><div class="rnum">RES-2025-0689</div><div class="rsub">15 jul 2025</div></td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div><div class="rsub">Aéreo · BSA</div></td><td>Rosas frescas<br><span class="rsub">1,050 kg · 36 pallets</span></td><td>15 jul 2025</td><td>Latam Cargo</td><td style="font-weight:700;color:var(--gd);font-size:12px">004-98765432</td><td><span class="pill p-transito"><i class="ti ti-plane" style="font-size:10px"></i> En tránsito</span></td><td><button class="abtn abtn-sec" onclick="goTo('detalle-reserva')"><i class="ti ti-eye"></i> Ver</button></td></tr>
+        <tr><td><div class="rnum">RES-2025-0651</div><div class="rsub">02 jun 2025</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div><div class="rsub">Aéreo · BSA</div></td><td>Flores frescas<br><span class="rsub">980 kg · 32 pallets</span></td><td>02 jun 2025</td><td>Latam Cargo</td><td style="font-weight:700;color:var(--gd);font-size:12px">004-97654321</td><td><span class="pill p-entregado"><i class="ti ti-circle-check" style="font-size:10px"></i> Entregado</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Docs</button></td></tr>
+        <tr><td><div class="rnum">RES-2025-0618</div><div class="rsub">15 may 2025</div></td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div><div class="rsub">Aéreo · Spot</div></td><td>Rosas · Gypsophila<br><span class="rsub">1,120 kg · 38 pallets</span></td><td>15 may 2025</td><td>Avianca Cargo</td><td style="font-weight:700;color:var(--gd);font-size:12px">134-12345678</td><td><span class="pill p-entregado"><i class="ti ti-circle-check" style="font-size:10px"></i> Entregado</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Docs</button></td></tr>
+        <tr><td><div class="rnum">RES-2025-0589</div><div class="rsub">10 abr 2025</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div><div class="rsub">Aéreo · BSA</div></td><td>Flores frescas<br><span class="rsub">1,050 kg · 35 pallets</span></td><td>10 abr 2025</td><td>Latam Cargo</td><td style="font-weight:700;color:var(--gd);font-size:12px">004-96543210</td><td><span class="pill p-cerrado">Cerrado</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Docs</button></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ===== DETALLE RESERVA ===== -->
+<div class="view" id="view-detalle-reserva">
+  <button class="back-btn" onclick="goTo('reservas')"><i class="ti ti-arrow-left"></i> Volver a mis reservas</button>
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">RES-2025-0718</div>
+      <div class="sec-sub">Reserva creada el 10 jul 2025 · Ejecutivo: María Estrella</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="pill p-espera"><i class="ti ti-hourglass" style="font-size:10px"></i> Esperando confirmación carrier</span>
+      <button class="abtn abtn-sec"><i class="ti ti-download"></i> Descargar docs</button>
+    </div>
+  </div>
+
+  <!-- TRACKER -->
+  <div class="card">
+    <div class="ch"><div class="ct"><i class="ti ti-route-2"></i> Estado del embarque</div></div>
+    <div class="cb">
+      <div class="tracker-wrap">
+        <div class="tracker">
+          <div class="trk-step done"><div class="trk-dot"><i class="ti ti-check" style="font-size:11px"></i></div><div class="trk-lbl">Solicitud<br>recibida</div><div class="trk-date">08 jul</div></div>
+          <div class="trk-step done"><div class="trk-dot"><i class="ti ti-check" style="font-size:11px"></i></div><div class="trk-lbl">Cotización<br>aprobada</div><div class="trk-date">10 jul</div></div>
+          <div class="trk-step done"><div class="trk-dot"><i class="ti ti-check" style="font-size:11px"></i></div><div class="trk-lbl">Reserva<br>creada</div><div class="trk-date">10 jul</div></div>
+          <div class="trk-step cur"><div class="trk-dot"><i class="ti ti-clock" style="font-size:11px"></i></div><div class="trk-lbl">Confirmación<br>carrier</div><div class="trk-date">En espera</div></div>
+          <div class="trk-step pend"><div class="trk-dot">5</div><div class="trk-lbl">AWB /<br>Embarque</div><div class="trk-date">—</div></div>
+          <div class="trk-step pend"><div class="trk-dot">6</div><div class="trk-lbl">En<br>tránsito</div><div class="trk-date">—</div></div>
+          <div class="trk-step pend"><div class="trk-dot">7</div><div class="trk-lbl">Entregado</div><div class="trk-date">—</div></div>
+        </div>
+      </div>
+      <div class="warn-box" style="margin-bottom:0"><i class="ti ti-info-circle"></i> Tu ejecutivo está gestionando la confirmación de espacio con el carrier. Te notificaremos por email y en este portal cuando tengamos respuesta.</div>
+    </div>
+  </div>
+
+  <div class="gd2">
+    <div>
+      <!-- DETALLE -->
+      <div class="card">
+        <div class="ch"><div class="ct"><i class="ti ti-package"></i> Detalle del embarque</div></div>
+        <div class="cb">
+          <div class="det-grid">
+            <div><div class="det-lbl">Origen</div><div class="det-val">GYE — Guayaquil, Ecuador</div></div>
+            <div><div class="det-lbl">Destino</div><div class="det-val">AMS — Ámsterdam, Países Bajos</div></div>
+            <div><div class="det-lbl">Modalidad</div><div class="det-val">Aéreo · Spot</div></div>
+            <div><div class="det-lbl">Carrier</div><div class="det-val">Latam Cargo</div></div>
+            <div><div class="det-lbl">Producto</div><div class="det-val">Brócoli congelado</div></div>
+            <div><div class="det-lbl">Peso bruto</div><div class="det-val">800 kg</div></div>
+            <div><div class="det-lbl">Unidades</div><div class="det-val">20 cajas</div></div>
+            <div><div class="det-lbl">Fecha de embarque</div><div class="det-val">28 julio 2025</div></div>
+            <div><div class="det-lbl">AWB / BL</div><div class="det-val" style="color:var(--warn)">Pendiente de confirmación</div></div>
+            <div><div class="det-lbl">ETA destino</div><div class="det-val" style="color:var(--muted)">—</div></div>
+          </div>
+          <div style="border-top:1px solid var(--bd);padding-top:14px;margin-top:4px">
+            <div class="det-lbl" style="margin-bottom:8px">Precio aprobado</div>
+            <div class="det-val-big">$1,480.00 USD</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCUMENTOS -->
+      <div class="card">
+        <div class="ch"><div class="ct"><i class="ti ti-files"></i> Documentos del embarque</div></div>
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th>Documento</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr><td><div style="font-weight:600">Factura comercial</div><div class="rsub">FAC-2025-0441</div></td><td><span class="pill p-confirmado">Disponible</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Descargar</button></td></tr>
+            <tr><td><div style="font-weight:600">Lista de empaque</div><div class="rsub">PL-2025-0441</div></td><td><span class="pill p-confirmado">Disponible</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Descargar</button></td></tr>
+            <tr><td><div style="font-weight:600">Guía aérea (AWB)</div><div class="rsub">Número pendiente</div></td><td><span class="pill p-espera">Pendiente</span></td><td><button class="abtn abtn-sec" disabled style="opacity:.4;cursor:not-allowed"><i class="ti ti-clock"></i> En proceso</button></td></tr>
+            <tr><td><div style="font-weight:600">Certificado de origen</div><div class="rsub">AGROCALIDAD</div></td><td><span class="pill p-confirmado">Disponible</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Descargar</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div>
+      <div class="card">
+        <div class="ch"><div class="ct"><i class="ti ti-headset"></i> Tu ejecutivo</div></div>
+        <div class="cb" style="text-align:center">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;margin:0 auto 10px">ME</div>
+          <div style="font-weight:700;font-size:15px;color:#3A3A3A">María Estrella</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Ejecutiva de ventas</div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+            <button class="btn btn-sec" style="width:100%;justify-content:center"><i class="ti ti-mail"></i> Enviar mensaje</button>
+            <button class="btn btn-sec" style="width:100%;justify-content:center"><i class="ti ti-phone"></i> +593 2 234 5678</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct"><i class="ti ti-bell"></i> Notificaciones</div></div>
+        <div class="cb" style="padding:0">
+          <div style="padding:12px 18px;border-bottom:1px solid #F7F7F7;font-size:12px"><div style="display:flex;gap:8px;align-items:flex-start"><div style="width:8px;height:8px;border-radius:50%;background:var(--g);margin-top:4px;flex-shrink:0"></div><div><div style="font-weight:500">Reserva creada y confirmada</div><div style="color:var(--muted);margin-top:2px">10 jul · 15:11 · Email enviado</div></div></div></div>
+          <div style="padding:12px 18px;border-bottom:1px solid #F7F7F7;font-size:12px"><div style="display:flex;gap:8px;align-items:flex-start"><div style="width:8px;height:8px;border-radius:50%;background:var(--warn);margin-top:4px;flex-shrink:0"></div><div><div style="font-weight:500;color:var(--warn)">Confirmación de carrier pendiente</div><div style="color:var(--muted);margin-top:2px">Se enviará cuando se confirme</div></div></div></div>
+          <div style="padding:12px 18px;font-size:12px"><div style="display:flex;gap:8px;align-items:flex-start"><div style="width:8px;height:8px;border-radius:50%;background:var(--muted);margin-top:4px;flex-shrink:0"></div><div><div style="font-weight:500">AWB disponible</div><div style="color:var(--muted);margin-top:2px">Pendiente · Se enviará al confirmar</div></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NUEVA SOLICITUD ===== -->
+<div class="view" id="view-solicitud">
+  <div class="sec-head">
+    <div><div class="sec-title">Nueva solicitud de transporte</div><div class="sec-sub">Completa el formulario y tu ejecutivo te enviará una cotización</div></div>
+  </div>
+
+  <div id="form-solicitud">
+    <div class="card">
+      <div class="ch"><div class="ct"><i class="ti ti-route-2"></i> Datos del embarque</div><span style="font-size:11px;color:var(--muted)">Paso 1 de 2</span></div>
+      <div class="cb">
+        <div class="form-sec">
+          <div class="form-sec-title"><i class="ti ti-map-pin"></i> Origen y destino</div>
+          <div class="fg fg3">
+            <div class="fld"><label class="lbl">Modalidad <span class="rq">*</span></label><select class="sel"><option value="">Seleccionar...</option><option>Aéreo</option><option>Marítimo</option><option>Terrestre</option></select></div>
+            <div class="fld"><label class="lbl">Puerto de origen <span class="rq">*</span></label><select class="sel"><option value="">Seleccionar...</option><option>GYE — Guayaquil</option><option>UIO — Quito</option></select></div>
+            <div class="fld"><label class="lbl">Destino <span class="rq">*</span></label><select class="sel"><option value="">Seleccionar...</option><option>MIA — Miami</option><option>AMS — Ámsterdam</option><option>MAD — Madrid</option><option>BOG — Bogotá</option><option>LIM — Lima</option><option>JFK — New York</option></select></div>
+          </div>
+          <div class="fg fg2">
+            <div class="fld"><label class="lbl">Fecha estimada de embarque <span class="rq">*</span></label><input class="inp" type="date"></div>
+            <div class="fld"><label class="lbl">¿Servicio urgente?</label><select class="sel"><option>No</option><option>Sí — necesito cotización en menos de 24h</option></select></div>
+          </div>
+        </div>
+
+        <div class="form-sec">
+          <div class="form-sec-title"><i class="ti ti-package"></i> Descripción de la carga</div>
+          <div class="fg fg3">
+            <div class="fld"><label class="lbl">Producto <span class="rq">*</span></label><input class="inp" type="text" placeholder="Ej: Rosas frescas, Brócoli congelado..."></div>
+            <div class="fld"><label class="lbl">Peso bruto (kg) <span class="rq">*</span></label><input class="inp" type="number" placeholder="0.00"></div>
+            <div class="fld"><label class="lbl">Temperatura requerida</label><select class="sel"><option>Ambiente</option><option>Refrigerado (2–8°C)</option><option>Congelado (-18°C)</option></select></div>
+          </div>
+          <div class="fg fg3">
+            <div class="fld"><label class="lbl">Tipo de embalaje</label><select class="sel"><option>Pallets</option><option>Cajas</option><option>Contenedor 20'</option><option>Contenedor 40'</option><option>Granel</option></select></div>
+            <div class="fld"><label class="lbl">Cantidad de unidades</label><input class="inp" type="number" placeholder="0"></div>
+            <div class="fld"><label class="lbl">Dimensiones aprox. (m³)</label><input class="inp" type="number" placeholder="0.00"></div>
+          </div>
+          <div class="fg fg1">
+            <div class="fld"><label class="lbl">¿Carga peligrosa / especial?</label><select class="sel"><option>No</option><option>Sí — mercancía peligrosa (UN/IATA)</option><option>Sí — carga sobredimensionada</option><option>Sí — requiere documentación especial</option></select></div>
+          </div>
+        </div>
+
+        <div class="form-sec">
+          <div class="form-sec-title"><i class="ti ti-notes"></i> Información adicional</div>
+          <div class="fg fg2">
+            <div class="fld"><label class="lbl">Valor declarado (USD)</label><input class="inp" type="number" placeholder="0.00"></div>
+            <div class="fld"><label class="lbl">¿Requiere seguro de carga?</label><select class="sel"><option>No</option><option>Sí — incluir seguro en cotización</option></select></div>
+          </div>
+          <div class="fg fg1">
+            <div class="fld"><label class="lbl">Observaciones o requisitos especiales</label><textarea class="inp" placeholder="Instrucciones especiales, restricciones, requisitos de documentación, etc."></textarea></div>
+          </div>
+        </div>
+
+        <div class="info-box"><i class="ti ti-info-circle"></i> Una vez enviada tu solicitud, tu ejecutivo la revisará y te enviará una cotización en un plazo de 2 a 4 horas hábiles. Recibirás una notificación por email.</div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+          <button class="btn btn-sec" onclick="goTo('inicio')">Cancelar</button>
+          <button class="btn btn-pri" onclick="enviarSolicitud()"><i class="ti ti-send"></i> Enviar solicitud</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESTADO ÉXITO POST ENVÍO -->
+  <div id="solicitud-ok" style="display:none">
+    <div class="card">
+      <div class="cb" style="text-align:center;padding:40px 20px">
+        <div style="width:70px;height:70px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:30px;color:var(--g)"><i class="ti ti-circle-check"></i></div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:#3A3A3A;margin-bottom:8px">¡Solicitud enviada correctamente!</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:420px;margin:0 auto 20px">Tu ejecutivo revisará los detalles y te enviará una cotización en las próximas 2–4 horas hábiles. Recibirás una notificación por email en <strong>contacto@florisol.com</strong></div>
+        <div style="display:inline-block;background:#F7F8FA;border:1px solid var(--bd);border-radius:8px;padding:8px 20px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--s);margin-bottom:22px">SOL-2025-0047</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-sec" onclick="goTo('reservas')"><i class="ti ti-calendar-check"></i> Ver mis reservas</button>
+          <button class="btn btn-pri" onclick="resetSolicitud()"><i class="ti ti-plus"></i> Nueva solicitud</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DOCUMENTOS ===== -->
+<div class="view" id="view-documentos">
+  <div class="sec-head">
+    <div><div class="sec-title">Documentos</div><div class="sec-sub">Facturas, AWBs, certificados y guías de tus embarques</div></div>
+    <div style="display:flex;gap:8px">
+      <select class="fsel" style="height:40px"><option>Todos los embarques</option><option>RES-2025-0718</option><option>RES-2025-0689</option><option>RES-2025-0651</option></select>
+      <button class="btn btn-sec"><i class="ti ti-download"></i> Descargar todos</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="frow">
+      <div class="swrap"><i class="ti ti-search"></i><input type="text" placeholder="Buscar documento..."></div>
+      <select class="fsel"><option>Todos los tipos</option><option>Guía aérea (AWB)</option><option>Factura comercial</option><option>Lista de empaque</option><option>Certificado de origen</option><option>BL Marítimo</option></select>
+      <select class="fsel"><option>Últimos 6 meses</option><option>Este año</option><option>2024</option></select>
+    </div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Documento</th><th>Reserva</th><th>Ruta</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead>
+      <tbody>
+        <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:14px;color:#1E40AF"><i class="ti ti-file-text"></i></div><div><div style="font-weight:600">Guía Aérea (AWB)</div><div class="rsub">004-98765432</div></div></div></td><td><div class="rnum">RES-0689</div></td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div></td><td>15 jul 2025</td><td><span class="pill p-confirmado">Disponible</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Descargar</button></td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#D1FAE5;display:flex;align-items:center;justify-content:center;font-size:14px;color:#065F46"><i class="ti ti-file-certificate"></i></div><div><div style="font-weight:600">Certificado de origen</div><div class="rsub">AGROCALIDAD · RES-0689</div></div></div></td><td><div class="rnum">RES-0689</div></td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div></td><td>15 jul 2025</td><td><span class="pill p-confirmado">Disponible</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Descargar</button></td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;font-size:14px;color:#92400E"><i class="ti ti-receipt"></i></div><div><div style="font-weight:600">Factura comercial</div><div class="rsub">FAC-2025-0441</div></div></div></td><td><div class="rnum">RES-0718</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div></td><td>10 jul 2025</td><td><span class="pill p-confirmado">Disponible</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Descargar</button></td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;font-size:14px;color:#4C1D95"><i class="ti ti-list-check"></i></div><div><div style="font-weight:600">Lista de empaque</div><div class="rsub">PL-2025-0441</div></div></div></td><td><div class="rnum">RES-0718</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div></td><td>10 jul 2025</td><td><span class="pill p-confirmado">Disponible</span></td><td><button class="abtn abtn-sec"><i class="ti ti-download"></i> Descargar</button></td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-size:14px;color:#6B7280"><i class="ti ti-plane"></i></div><div><div style="font-weight:600">Guía Aérea (AWB)</div><div class="rsub">Número pendiente</div></div></div></td><td><div class="rnum">RES-0718</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div></td><td>—</td><td><span class="pill p-espera">Pendiente</span></td><td><button class="abtn abtn-sec" disabled style="opacity:.4"><i class="ti ti-clock"></i> En proceso</button></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ===== MODALES ===== -->
+<div class="modal-ov" id="m-aprobar">
+  <div class="modal">
+    <div class="modal-h"><div class="modal-title"><i class="ti ti-circle-check"></i> Aprobar cotización</div><div class="modal-close" onclick="closeM('m-aprobar')"><i class="ti ti-x"></i></div></div>
+    <div class="modal-b">
+      <div style="background:var(--gl);border:1px solid rgba(128,186,39,0.3);border-radius:9px;padding:16px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:#3A6010;margin-bottom:10px">COT-2025-0841 — Resumen</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+          <div><span style="color:var(--muted)">Ruta:</span> <strong>GYE → MIA</strong></div>
+          <div><span style="color:var(--muted)">Producto:</span> <strong>Flores · 1,250 kg</strong></div>
+          <div><span style="color:var(--muted)">Embarque:</span> <strong>15 ago 2025</strong></div>
+          <div><span style="color:var(--muted)">Carrier:</span> <strong>Latam Cargo</strong></div>
+          <div style="grid-column:1/-1"><span style="color:var(--muted)">Precio total:</span> <strong style="font-size:18px;font-family:'Barlow Condensed',sans-serif;color:var(--gd)">$2,312.50 USD</strong></div>
+        </div>
+      </div>
+      <div class="warn-box"><i class="ti ti-alert-triangle"></i> Al aprobar, autorizas a Logiztik Alliance Group a proceder con la reserva y gestión del espacio de carga con el carrier indicado.</div>
+      <div class="fld"><label class="lbl">Nombre del autorizante <span class="rq">*</span></label><input class="inp" type="text" placeholder="Tu nombre completo para registro" value="Carlos Medina"></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-sec" onclick="closeM('m-aprobar')">Cancelar</button>
+      <button class="btn btn-pri" onclick="aprobarCot()"><i class="ti ti-circle-check"></i> Confirmar aprobación</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-ov" id="m-rechazar">
+  <div class="modal">
+    <div class="modal-h"><div class="modal-title"><i class="ti ti-message-circle"></i> Solicitar ajuste</div><div class="modal-close" onclick="closeM('m-rechazar')"><i class="ti ti-x"></i></div></div>
+    <div class="modal-b">
+      <div class="info-box"><i class="ti ti-info-circle"></i> Tu ejecutivo recibirá tu comentario y te contactará para ajustar la cotización según tus necesidades.</div>
+      <div class="fg fg1" style="margin-bottom:12px">
+        <div class="fld"><label class="lbl">Motivo del ajuste <span class="rq">*</span></label>
+          <select class="sel">
+            <option value="">Seleccionar motivo...</option>
+            <option>Precio muy alto — solicito revisión de tarifa</option>
+            <option>Fecha de embarque incorrecta</option>
+            <option>Cambio en el peso / volumen de la carga</option>
+            <option>Cambio de destino</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="fld"><label class="lbl">Comentarios adicionales <span class="rq">*</span></label><textarea class="inp" placeholder="Describe qué necesitas ajustar o cuál es tu presupuesto objetivo..."></textarea></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-sec" onclick="closeM('m-rechazar')">Cancelar</button>
+      <button class="btn btn-pri" onclick="closeM('m-rechazar')"><i class="ti ti-send"></i> Enviar comentario</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-ov" id="m-aprobada-ok">
+  <div class="modal">
+    <div class="modal-b" style="text-align:center;padding:36px 24px">
+      <div style="width:68px;height:68px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:30px;color:var(--g)"><i class="ti ti-circle-check"></i></div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#3A3A3A;margin-bottom:8px">¡Cotización aprobada!</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px">Tu ejecutivo ha sido notificado y procederá con la reserva. Recibirás una confirmación en tu email en los próximos minutos.</div>
+      <div style="background:#F7F8FA;border:1px solid var(--bd);border-radius:8px;padding:8px 20px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--s);margin-bottom:20px;display:inline-block">RES-2025-0742</div>
+      <div><button class="btn btn-pri" onclick="closeM('m-aprobada-ok');goTo('reservas')"><i class="ti ti-calendar-check"></i> Ver mis reservas</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// NAVEGACIÓN
+var NAVS = ['inicio','reservas','solicitud','documentos'];
+var TITLES = {
+  inicio: 'Inicio',
+  reservas: 'Mis reservas',
+  'detalle-reserva': 'Mis reservas',
+  solicitud: 'Nueva solicitud',
+  documentos: 'Documentos'
+};
+
+function goTo(v) {
+  document.querySelectorAll('.view').forEach(function(el){ el.classList.remove('active'); });
+  var target = document.getElementById('view-' + v);
+  if (target) target.classList.add('active');
+  NAVS.forEach(function(id){
+    var btn = document.getElementById('nav-' + id);
+    if (btn) btn.classList.remove('on');
+  });
+  var navKey = (v === 'detalle-reserva') ? 'reservas' : v;
+  var btn = document.getElementById('nav-' + navKey);
+  if (btn) btn.classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+// MODALES
+function openM(id) { document.getElementById(id).classList.add('open'); }
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click', function(e){
+  if (e.target.classList.contains('modal-ov')) e.target.classList.remove('open');
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-ov.open').forEach(function(m){ m.classList.remove('open'); });
+  }
+});
+
+// APROBAR COTIZACIÓN
+function aprobarCot() {
+  closeM('m-aprobar');
+  setTimeout(function(){
+    openM('m-aprobada-ok');
+    var cp = document.querySelector('.cot-pending');
+    if (cp) cp.style.display = 'none';
+    var sc = document.querySelector('.stats-row .stat-card:last-child .stat-val');
+    if (sc) sc.textContent = '0';
+  }, 300);
+}
+
+// ENVIAR SOLICITUD
+function enviarSolicitud() {
+  document.getElementById('form-solicitud').style.display = 'none';
+  document.getElementById('solicitud-ok').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+function resetSolicitud() {
+  document.getElementById('form-solicitud').style.display = 'block';
+  document.getElementById('solicitud-ok').style.display = 'none';
+}
+</script>
+</body>
+</html>
