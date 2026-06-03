@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMS · Logiztik Alliance Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#80BA27;--gd:#6FA320;--gl:#EEF7DA;
+  --s:#58585A;--sm:#8A8A8C;--sl:#E8E8EA;
+  --w:#fff;--bg:#F2F3F4;
+  --err:#E05A2B;--warn:#F59E0B;--info:#3B82F6;
+  --txt:#2C2C2C;--muted:#888;
+  --bd:#DDE1E7;--r:10px;--rs:7px;
+  --sh:0 1px 4px rgba(0,0,0,0.07);
+}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--txt);font-size:14px;min-height:100vh}
+.layout{display:flex;min-height:100vh}
+/* SIDEBAR */
+.sb{width:230px;background:var(--s);min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;height:100vh;z-index:50;overflow-y:auto}
+.sb-logo{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;min-height:64px;background:rgba(0,0,0,0.15)}
+.sb-logo img{max-width:160px;max-height:40px;object-fit:contain;filter:brightness(0) invert(1)}
+.sb-nav{flex:1;padding:10px 0}
+.sb-sec{padding:10px 16px 4px;font-size:9px;font-weight:700;color:rgba(255,255,255,0.28);letter-spacing:1.8px;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;color:rgba(255,255,255,0.58);font-size:13px;transition:all .15s;position:relative;border:none;background:none;width:100%;font-family:'Barlow',sans-serif;text-align:left}
+.sb-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+.sb-item.on{background:rgba(128,186,39,0.18);color:var(--g);font-weight:600}
+.sb-item.on::before{content:'';position:absolute;left:0;top:5px;bottom:5px;width:3px;background:var(--g);border-radius:0 2px 2px 0}
+.sb-item i{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;background:var(--err);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center}
+.sb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.av{width:32px;height:32px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.av-info .name{font-size:12px;font-weight:500;color:#fff}
+.av-info .role{font-size:10px;color:rgba(255,255,255,0.4)}
+/* MAIN */
+.main{flex:1;margin-left:230px;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--w);border-bottom:1px solid var(--bd);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:var(--sh);position:sticky;top:0;z-index:40}
+.ptitle{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:#3A3A3A}
+.bc{font-size:11px;color:#bbb;margin-top:1px;display:flex;align-items:center;gap:4px}
+.bc em{color:var(--g);font-style:normal;font-weight:500}
+.tbr{display:flex;align-items:center;gap:8px}
+.tbtn{width:34px;height:34px;border-radius:8px;border:1px solid var(--bd);background:var(--w);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#999;font-size:16px;position:relative;transition:all .15s}
+.tbtn:hover{background:var(--bg)}
+.ndot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--err);border-radius:50%;border:1.5px solid #fff}
+/* VIEWS */
+.view{display:none;padding:22px 24px 48px}
+.view.active{display:block}
+/* SECTION HEADER */
+.sec-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#3A3A3A}
+.sec-sub{font-size:12px;color:var(--muted);margin-top:3px}
+/* CARDS */
+.card{background:var(--w);border-radius:var(--r);border:1px solid var(--bd);margin-bottom:18px;box-shadow:var(--sh);overflow:hidden}
+.ch{padding:13px 18px;border-bottom:1px solid #F2F2F4;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ct{font-size:13px;font-weight:700;color:#3A3A3A;display:flex;align-items:center;gap:7px}
+.ct i{color:var(--g);font-size:15px}
+.cb{padding:0}
+.cb-p{padding:16px 18px}
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.p-nuevo{background:#F3F4F6;color:#6B7280}
+.p-revision{background:#FEF3C7;color:#92400E}
+.p-aprobada{background:#D1FAE5;color:#065F46}
+.p-rechazada{background:rgba(224,90,43,0.12);color:var(--err)}
+.p-reservado{background:#DBEAFE;color:#1E40AF}
+.p-espera{background:#FEF3C7;color:#92400E}
+.p-confirmado{background:#D1FAE5;color:#065F46}
+.p-transito{background:#EDE9FE;color:#4C1D95}
+.p-entregado{background:#F0FDF4;color:#14532D}
+.p-cerrado{background:#F3F4F6;color:#6B7280}
+.p-alerta{background:rgba(224,90,43,0.1);color:var(--err);border:1px solid rgba(224,90,43,0.25)}
+.p-bsa{background:var(--gl);color:var(--gd);border:1px solid rgba(128,186,39,0.3)}
+.p-spot{background:#EDE9FE;color:#4C1D95}
+/* FILTERS */
+.frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 18px;border-bottom:1px solid #F5F5F7;background:#FAFAFA}
+.fsel{height:32px;border:1px solid var(--bd);border-radius:6px;padding:0 10px;font-family:'Barlow',sans-serif;font-size:12px;color:var(--s);background:var(--w);outline:none;cursor:pointer}
+.fsel:focus{border-color:var(--g)}
+.swrap{position:relative;flex:1;min-width:180px;max-width:280px}
+.swrap i{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:#bbb;font-size:13px;pointer-events:none}
+.swrap input{width:100%;height:32px;border:1px solid var(--bd);border-radius:6px;padding:0 10px 0 28px;font-family:'Barlow',sans-serif;font-size:12px;color:var(--s);background:var(--w);outline:none}
+.swrap input:focus{border-color:var(--g)}
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.6px;padding:10px 16px;background:#FAFAFA;border-bottom:1px solid #F0F0F0;white-space:nowrap}
+.tbl td{padding:12px 16px;border-top:1px solid #F7F7F7;font-size:13px;vertical-align:middle}
+.tbl tr:hover td{background:#FAFFFE;cursor:pointer}
+.tbl tr.urg td{background:rgba(224,90,43,0.025)}
+.rnum{font-weight:700;color:var(--s);font-family:'Barlow Condensed',sans-serif;font-size:14px}
+.rsub{font-size:11px;color:var(--muted);margin-top:1px}
+.route{display:flex;align-items:center;gap:5px;font-weight:500}
+.rarr{color:var(--g);font-size:11px}
+.urgbadge{background:rgba(224,90,43,0.1);color:var(--err);font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;margin-left:5px}
+/* BTNS */
+.abtn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .15s;white-space:nowrap}
+.abtn.pri{background:var(--g);color:#fff} .abtn.pri:hover{background:var(--gd)}
+.abtn.sec{background:var(--w);color:var(--s);border:1px solid var(--bd)} .abtn.sec:hover{background:var(--bg)}
+.abtn.warn{background:rgba(245,158,11,0.1);color:#92400E;border:1px solid rgba(245,158,11,0.3)}
+.abtn.info{background:rgba(59,130,246,0.1);color:#1E40AF;border:1px solid rgba(59,130,246,0.25)}
+.abtn.danger{background:rgba(224,90,43,0.08);color:var(--err);border:1px solid rgba(224,90,43,0.2)}
+.abtn-grp{display:flex;gap:4px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0 18px;height:36px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.btn.pri{background:var(--g);color:#fff} .btn.pri:hover{background:var(--gd)}
+.btn.sec{background:var(--w);color:var(--s);border:1px solid var(--bd)} .btn.sec:hover{background:var(--bg)}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding-top:4px}
+/* FORMS */
+.fg{display:grid;gap:12px;margin-bottom:14px}
+.fg.c2{grid-template-columns:1fr 1fr} .fg.c3{grid-template-columns:1fr 1fr 1fr} .fg.c1{grid-template-columns:1fr}
+@media(max-width:700px){.fg.c2,.fg.c3{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:4px}
+.lbl{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.6px}
+.lbl .rq{color:var(--err)}
+.inp,.sel{border:1px solid var(--bd);border-radius:var(--rs);padding:0 11px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--txt);background:var(--w);outline:none;transition:border .15s,box-shadow .15s;width:100%;height:36px}
+.inp:focus,.sel:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(128,186,39,0.12)}
+.inp.ro{background:#F7F8FA;color:#999}
+textarea.inp{height:72px;padding-top:9px;resize:vertical;line-height:1.5}
+/* ALERT */
+.alert{border-radius:8px;padding:10px 14px;font-size:12px;display:flex;gap:8px;align-items:flex-start;margin-bottom:14px;line-height:1.5}
+.alert.warn{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);color:#78400E}
+.alert.err{background:rgba(224,90,43,0.07);border:1px solid rgba(224,90,43,0.25);color:#7A3010}
+.alert.ok{background:var(--gl);border:1px solid rgba(128,186,39,0.3);color:#3A6010}
+.alert.info{background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.25);color:#1E3A8A}
+.alert i{flex-shrink:0;margin-top:1px}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-ov.open{display:flex}
+.modal{background:var(--w);border-radius:14px;width:100%;max-width:640px;box-shadow:0 20px 60px rgba(0,0,0,0.2);overflow:hidden;max-height:90vh;display:flex;flex-direction:column}
+.modal-h{padding:16px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--w);position:sticky;top:0;z-index:2}
+.modal-title{font-size:14px;font-weight:700;color:#3A3A3A;display:flex;align-items:center;gap:8px}
+.modal-title i{color:var(--g)}
+.modal-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--bd);background:var(--w);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#999;font-size:15px}
+.modal-b{padding:20px;overflow-y:auto;flex:1}
+.modal-f{padding:13px 20px;border-top:1px solid var(--bd);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;background:var(--w)}
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+@media(max-width:1100px){.g2,.g3{grid-template-columns:1fr}}
+/* DASHBOARD KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+@media(max-width:1200px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
+.kpi{background:var(--w);border-radius:var(--r);border:1px solid var(--bd);padding:16px 18px;box-shadow:var(--sh);cursor:pointer;transition:all .2s}
+.kpi:hover{border-color:var(--g);transform:translateY(-1px);box-shadow:0 4px 16px rgba(128,186,39,0.12)}
+.kpi.urgent{border-left:3px solid var(--err)}
+.kpi.warn{border-left:3px solid var(--warn)}
+.kpi.ok{border-left:3px solid var(--g)}
+.kpi.info{border-left:3px solid var(--info)}
+.kpi.neutral{border-left:3px solid var(--sl)}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.kpi-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.ki-red{background:rgba(224,90,43,0.1);color:var(--err)}
+.ki-amber{background:rgba(245,158,11,0.1);color:var(--warn)}
+.ki-green{background:var(--gl);color:var(--gd)}
+.ki-blue{background:rgba(59,130,246,0.1);color:var(--info)}
+.ki-gray{background:var(--sl);color:var(--s)}
+.kpi-val{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:var(--txt);line-height:1}
+.kpi-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.kpi-delta{font-size:11px;font-weight:600;margin-top:8px;display:flex;align-items:center;gap:4px}
+.kd-red{color:var(--err)} .kd-green{color:var(--gd)} .kd-amber{color:var(--warn)} .kd-blue{color:var(--info)} .kd-gray{color:var(--muted)}
+/* WELCOME */
+.welcome{background:linear-gradient(135deg,var(--s) 0%,#3D3D3F 100%);border-radius:var(--r);padding:22px 28px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden}
+.welcome::after{content:'';position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;background:rgba(128,186,39,0.08);pointer-events:none}
+.welcome-txt h2{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:3px}
+.welcome-txt p{font-size:12px;color:rgba(255,255,255,0.55)}
+.welcome-right{display:flex;gap:8px;z-index:1}
+.wb{display:inline-flex;align-items:center;gap:6px;padding:0 16px;height:34px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.wb.pri{background:var(--g);color:#fff} .wb.sec{background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.2)}
+/* ALERT BANNER */
+.alert-banner{display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:8px;font-size:12px;margin-bottom:12px;line-height:1.5}
+.ab-red{background:rgba(224,90,43,0.07);border:1px solid rgba(224,90,43,0.25);color:#7A3010}
+.ab-amber{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.3);color:#78400E}
+.ab-icon{font-size:18px;flex-shrink:0}
+.ab-btn{margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:'Barlow',sans-serif;flex-shrink:0}
+.ab-btn.red{background:var(--err);color:#fff} .ab-btn.amber{background:var(--warn);color:#fff}
+/* ACTIVIDAD */
+.act-item{display:flex;align-items:flex-start;gap:12px;padding:11px 18px;border-bottom:1px solid #F7F7F7}
+.act-item:last-child{border-bottom:none}
+.act-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.ai-green{background:var(--gl);color:var(--gd)} .ai-red{background:rgba(224,90,43,0.1);color:var(--err)}
+.ai-amber{background:rgba(245,158,11,0.1);color:var(--warn)} .ai-blue{background:rgba(59,130,246,0.1);color:var(--info)}
+.ai-gray{background:var(--sl);color:var(--s)}
+.act-title{font-size:13px;font-weight:500;color:#3A3A3A;line-height:1.4}
+.act-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.act-time{font-size:11px;color:#bbb;white-space:nowrap;flex-shrink:0;margin-top:2px}
+/* TAREAS */
+.task-item{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid #F7F7F7;cursor:pointer}
+.task-item:last-child{border-bottom:none}
+.task-item:hover{background:#FAFFFE}
+.task-prio{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.task-prio.high{background:var(--err)} .task-prio.med{background:var(--warn)} .task-prio.low{background:var(--g)}
+.task-title{font-size:13px;font-weight:500;color:#3A3A3A}
+.task-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.task-due{font-size:11px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.task-due.urgent{color:var(--err)} .task-due.soon{color:var(--warn)} .task-due.ok{color:var(--gd)}
+/* STATS STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #F0F0F0}
+.stat-cell{padding:14px 18px;text-align:center;border-right:1px solid #F0F0F0}
+.stat-cell:last-child{border-right:none}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:var(--txt)}
+.stat-val.g{color:var(--gd)} .stat-val.r{color:var(--err)} .stat-val.a{color:var(--warn)} .stat-val.b{color:var(--info)}
+.stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-top:3px}
+/* BSA BARS */
+.bsa-row{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid #F7F7F7;cursor:pointer;transition:background .15s}
+.bsa-row:last-child{border-bottom:none} .bsa-row:hover{background:#FAFFFE}
+.bsa-carrier{font-weight:700;font-size:13px;color:var(--s)}
+.bsa-route-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.bsa-bw{flex:1;min-width:100px}
+.bsa-bg{height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden;margin-bottom:3px}
+.bsa-fill{height:100%;border-radius:4px;transition:width .4s}
+.bsa-fill.g{background:var(--g)} .bsa-fill.a{background:var(--warn)} .bsa-fill.r{background:var(--err)}
+.bsa-nums{font-size:11px;color:var(--muted)}
+.bsa-exp{font-size:11px;color:var(--muted);white-space:nowrap;text-align:right;min-width:90px}
+.bsa-reservas{background:#F7F8FA;border-top:1px solid #EEE;padding:10px 18px;display:none}
+.bsa-res-title{font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.bsa-res-item{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #F0F0F0;font-size:12px}
+.bsa-res-item:last-child{border-bottom:none}
+/* CARRIER CARDS */
+.carrier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:1000px){.carrier-grid{grid-template-columns:1fr 1fr}}
+.carrier-card{background:var(--w);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;cursor:pointer;transition:all .2s}
+.carrier-card:hover{border-color:var(--g);box-shadow:0 3px 14px rgba(128,186,39,0.15)}
+.carrier-ch{padding:16px 18px;border-bottom:1px solid #F2F2F4;display:flex;align-items:flex-start;justify-content:space-between}
+.carrier-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.ci-aereo{background:#DBEAFE;color:#1E40AF} .ci-maritimo{background:#D1FAE5;color:#065F46} .ci-terrestre{background:#FEF3C7;color:#92400E}
+.carrier-name{font-weight:700;font-size:14px;color:#3A3A3A;margin-top:8px}
+.carrier-type{font-size:11px;color:var(--muted);margin-top:2px}
+.carrier-cb{padding:14px 18px}
+.carrier-stat{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #F5F5F5;font-size:12px}
+.carrier-stat:last-child{border-bottom:none}
+.cs-lbl{color:var(--muted)} .cs-val{font-weight:600;color:var(--txt)} .cs-val.g{color:var(--gd)}
+.route-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;padding-top:10px;border-top:1px solid #F0F0F0}
+.route-tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;background:#F0F0F0;color:var(--s)}
+/* COT MODULE */
+.tgl{display:flex;border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.tglb{flex:1;padding:9px 10px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;border:none;background:var(--w);color:#aaa;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Barlow',sans-serif}
+.tglb:not(:last-child){border-right:1px solid var(--bd)}
+.tglb.bsa{background:var(--g);color:#fff} .tglb.spot{background:var(--s);color:#fff}
+.bsa-status{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:8px;font-size:12px;margin-bottom:14px}
+.bsa-status.ok{background:var(--gl);border:1px solid rgba(128,186,39,.35)}
+.bsa-status.ok i{color:var(--g);font-size:18px;margin-top:1px}
+.bsa-status.ok strong{color:#3A6010}
+.bsa-status.nok{background:#F7F8FA;border:1px solid var(--bd);color:#666}
+.bsa-status.nok i{color:var(--sm);font-size:18px;margin-top:1px}
+.resbox{background:#F7F8FA;border-radius:8px;padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:8px}
+.kv{font-size:20px;font-weight:700;font-family:'Barlow Condensed',sans-serif;color:var(--txt)}
+.kv.g{color:var(--gd)} .kv.r{color:var(--err)}
+.kl{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.mbar{height:5px;background:var(--sl);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.mfill{height:100%;border-radius:3px;background:var(--g);transition:width .4s,background .3s}
+.infonote{background:#F7F9FC;border-left:3px solid var(--g);border-radius:0 7px 7px 0;padding:9px 12px;font-size:12px;color:#666;margin-bottom:12px;display:flex;gap:8px;line-height:1.5}
+.infonote i{color:var(--g);flex-shrink:0;margin-top:1px}
+.cl{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.ci{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:7px;border:1px solid #EAEAEA;font-size:12px}
+.ci.aok{background:rgba(128,186,39,.05);border-color:rgba(128,186,39,.25)}
+.ci.awk{background:rgba(224,90,43,.05);border-color:rgba(224,90,43,.25)}
+.ci.man{background:#FAFAFA}
+.cd{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px}
+.cd.ok{background:var(--g);color:#fff} .cd.warn{background:var(--err);color:#fff} .cd.pend{background:#EAEAEA;color:#bbb}
+.ct2{flex:1;color:#444;line-height:1.4}
+.ctag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px;flex-shrink:0}
+.ctag.auto{background:var(--gl);color:#3A6010} .ctag.man{background:#EAEAEC;color:var(--s)}
+/* STEPPER */
+.stepper{background:var(--w);border-radius:var(--r);border:1px solid var(--bd);padding:14px 20px;display:flex;align-items:center;margin-bottom:18px;box-shadow:var(--sh)}
+.step-i{display:flex;align-items:center;gap:8px;flex:1}
+.sn{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.sn.done{background:var(--g);color:#fff} .sn.cur{background:var(--s);color:#fff} .sn.pend{background:#F0F0F0;color:#ccc}
+.sl-t{font-size:11px;font-weight:600;white-space:nowrap}
+.step-i.done .sl-t{color:var(--g)} .step-i.cur .sl-t{color:var(--txt)} .step-i.pend .sl-t{color:#ccc}
+.sdiv{flex:1;height:1.5px;background:var(--bd);margin:0 8px;min-width:12px}
+.sdiv.done{background:var(--g)}
+/* RESERVAS PANEL */
+.pstep{border:1px solid var(--bd);border-radius:9px;margin-bottom:12px;overflow:hidden}
+.pstep.done{border-color:rgba(128,186,39,0.4)}
+.pstep.active{border-color:var(--s);box-shadow:0 2px 10px rgba(88,88,90,0.1)}
+.pstep.locked{opacity:.45;pointer-events:none}
+.psh{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#FAFAFA;cursor:pointer}
+.pstep.done .psh{background:rgba(128,186,39,0.04)}
+.pstep.active .psh{background:#F5F6F8}
+.psl{display:flex;align-items:center;gap:12px}
+.psn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.psn.done{background:var(--g);color:#fff} .psn.active{background:var(--s);color:#fff} .psn.locked{background:#EAEAEA;color:#CCC}
+.pst{font-size:13px;font-weight:700;color:#3A3A3A} .pstep.locked .pst{color:#CCC}
+.pss{font-size:11px;color:var(--muted);margin-top:2px}
+.psb{padding:16px 18px;border-top:1px solid #F0F0F0} .pstep.locked .psb{display:none}
+.bsa-inline{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-radius:8px;font-size:12px;margin-bottom:12px}
+.bsa-inline.ok{background:var(--gl);border:1px solid rgba(128,186,39,.3)}
+.bsa-inline.nok{background:#FEF3C7;border:1px solid rgba(245,158,11,.35)}
+.bsa-inline i{font-size:18px;margin-top:1px;flex-shrink:0}
+.bsa-inline.ok i{color:var(--g)} .bsa-inline.nok i{color:var(--warn)}
+.radio-grp{display:flex;border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.rb{flex:1;padding:8px 8px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;border:none;background:var(--w);color:#aaa;transition:all .15s;font-family:'Barlow',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px}
+.rb:not(:last-child){border-right:1px solid var(--bd)}
+.rb.sg{background:var(--g);color:#fff} .rb.ss{background:var(--s);color:#fff}
+/* RESUMEN DETALLE */
+.res-hdr{background:var(--w);border-radius:var(--r);border:1px solid var(--bd);padding:18px 22px;margin-bottom:18px;box-shadow:var(--sh)}
+.res-hdr-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.res-id{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:#3A3A3A}
+.res-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.res-meta{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding-top:12px;border-top:1px solid #F0F0F0}
+@media(max-width:900px){.res-meta{grid-template-columns:repeat(3,1fr)}}
+.rm-l{font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.5px}
+.rm-v{font-size:13px;font-weight:600;color:var(--txt);margin-top:2px}
+/* LATERAL RESERVA */
+.costo-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #F5F5F5;font-size:12px}
+.costo-row:last-child{border-bottom:none;font-weight:700;padding-top:10px}
+.cr-lbl{color:var(--muted)}
+.cr-val{font-weight:600;font-family:'Barlow Condensed',sans-serif;font-size:15px}
+.cr-val.g{color:var(--gd)}
+.tline{display:flex;flex-direction:column}
+.tl-i{display:flex;gap:12px;padding:10px 0;position:relative}
+.tl-i:not(:last-child)::before{content:'';position:absolute;left:11px;top:28px;bottom:-10px;width:1.5px;background:#EEE}
+.tl-d{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;z-index:1}
+.tl-d.done{background:var(--g);color:#fff} .tl-d.cur{background:var(--warn);color:#fff} .tl-d.pend{background:#F0F0F0;color:#ccc;border:1.5px solid #DDD}
+.tl-t{font-size:12px;font-weight:600;color:#3A3A3A;line-height:1.4}
+.tl-s{font-size:11px;color:var(--muted);margin-top:2px}
+.tl-dt{font-size:10px;color:#bbb;margin-top:2px}
+.notif-i{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid #F5F5F7}
+.notif-i:last-child{border-bottom:none}
+.ndot2{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.ndot2.sent{background:var(--g)} .ndot2.pend{background:var(--warn)}
+.ntxt{font-size:12px;color:#3A3A3A;line-height:1.4} .ndt{font-size:10px;color:#bbb;margin-top:2px}
+/* VARIACION */
+.var-box{border-radius:9px;padding:14px 16px;margin-bottom:14px}
+.var-box.ok{background:var(--gl);border:1px solid rgba(128,186,39,.3)}
+.var-box.warn{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.35)}
+.var-box.err{background:rgba(224,90,43,.07);border:1px solid rgba(224,90,43,.3)}
+.var-g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:10px}
+.var-lbl{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.var-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700}
+.var-val.g{color:var(--gd)} .var-val.r{color:var(--err)} .var-val.a{color:var(--warn)}
+.var-verdict{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px solid rgba(0,0,0,.07)}
+.var-verdict.ok{color:var(--gd)} .var-verdict.warn{color:#92400E} .var-verdict.err{color:var(--err)}
+/* CAP PLANNING */
+.cap-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.cap-kpi{background:var(--w);border-radius:var(--r);border:1px solid var(--bd);padding:16px 18px;box-shadow:var(--sh)}
+.cap-kpi .cv{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:var(--txt)}
+.cap-kpi .cv.g{color:var(--gd)} .cap-kpi .cv.a{color:var(--warn)} .cap-kpi .cv.r{color:var(--err)}
+.cap-kpi .cl2{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-top:4px}
+/* CHART */
+.chart-wrap{padding:14px 18px 8px}
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:80px}
+.chart-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.chart-bar{width:100%;border-radius:4px 4px 0 0;background:var(--g);opacity:.8;min-height:4px;cursor:pointer}
+.chart-bar:hover{opacity:1}
+.chart-bar.acc{background:var(--s);opacity:.6}
+.chart-bar-lbl{font-size:9px;color:var(--muted);white-space:nowrap}
+.chart-bar-val{font-size:10px;font-weight:700;color:var(--s)}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sb">
+  <div class="sb-logo">
+    <img src="data:image/png;base64,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" alt="Logiztik Alliance Group">
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-sec">Principal</div>
+    <button class="sb-item" id="nav-dashboard" onclick="showView('dashboard')"><i class="ti ti-layout-dashboard"></i> Tablero de control</button>
+    <div class="sb-sec">Operaciones</div>
+    <button class="sb-item on" id="nav-cotizaciones" onclick="showView('cotizaciones')"><i class="ti ti-file-invoice"></i> Cotizaciones<span class="sb-badge">3</span></button>
+    <button class="sb-item" id="nav-reservas" onclick="showView('reservas')"><i class="ti ti-calendar-check"></i> Reservas</button>
+    <button class="sb-item" id="nav-capacity" onclick="showView('capacity')"><i class="ti ti-box"></i> Capacity Planning</button>
+    <button class="sb-item" id="nav-carriers" onclick="showView('carriers')"><i class="ti ti-truck"></i> Carriers</button>
+    <div class="sb-sec">Administración</div>
+    <button class="sb-item"><i class="ti ti-users"></i> Clientes</button>
+    <button class="sb-item"><i class="ti ti-report-analytics"></i> Reportes</button>
+    <button class="sb-item"><i class="ti ti-settings"></i> Configuración</button>
+  </nav>
+  <div class="sb-foot">
+    <div class="av">ME</div>
+    <div class="av-info"><div class="name">María Estrella</div><div class="role">Ejecutiva de ventas</div></div>
+  </div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="ptitle" id="page-title">Cotizaciones</div>
+      <div class="bc" id="page-bc"><em>Listado de cotizaciones</em></div>
+    </div>
+    <div class="tbr">
+      <div class="tbtn" style="position:relative"><i class="ti ti-bell"></i><div class="ndot"></div></div>
+      <div class="tbtn"><i class="ti ti-help-circle"></i></div>
+      <div class="tbtn"><i class="ti ti-user-circle"></i></div>
+    </div>
+  </div>
+
+  <!-- ═══ DASHBOARD ═══ -->
+  <div class="view" id="view-dashboard">
+    <div style="padding:22px 24px 0">
+      <div class="welcome">
+        <div class="welcome-txt"><h2>Buenos días, María Estrella</h2><p>3 solicitudes por cotizar · 2 reservas esperando confirmación · 1 variación pendiente</p></div>
+        <div class="welcome-right">
+          <button class="wb sec" onclick="showView('cotizaciones')"><i class="ti ti-file-invoice"></i> Cotizaciones</button>
+          <button class="wb sec" onclick="showView('reservas')"><i class="ti ti-calendar-check"></i> Reservas</button>
+        </div>
+      </div>
+      <div class="alert-banner ab-red"><i class="ti ti-alert-triangle ab-icon"></i><div><strong>SOL-2025-0044</strong> — Florisol · UIO→MIA · Rosas 980 kg · Ingresada hace 6h. Vence hoy si no se cotiza.</div><button class="ab-btn red" onclick="showView('cotizaciones')"><i class="ti ti-file-invoice" style="font-size:11px"></i> Cotizar ahora</button></div>
+      <div class="alert-banner ab-amber"><i class="ti ti-clock ab-icon"></i><div><strong>RES-2025-0718</strong> — Latam Cargo lleva +48h sin responder solicitud de espacio spot para Florisol.</div><button class="ab-btn amber" onclick="showView('detalle-reserva')"><i class="ti ti-arrow-right" style="font-size:11px"></i> Ver reserva</button></div>
+      <div class="kpi-row">
+        <div class="kpi urgent" onclick="showView('cotizaciones')">
+          <div class="kpi-top"><div class="kpi-icon ki-red"><i class="ti ti-clock-exclamation"></i></div><span style="font-size:9px;font-weight:700;color:var(--err);text-transform:uppercase">Acción</span></div>
+          <div class="kpi-val">3</div><div class="kpi-lbl">Solicitudes por cotizar</div>
+          <div class="kpi-delta kd-red"><i class="ti ti-alert-triangle" style="font-size:10px"></i> 1 vence hoy</div>
+        </div>
+        <div class="kpi warn" onclick="showView('reservas')">
+          <div class="kpi-top"><div class="kpi-icon ki-amber"><i class="ti ti-hourglass"></i></div></div>
+          <div class="kpi-val">5</div><div class="kpi-lbl">Esp. confirmación carrier</div>
+          <div class="kpi-delta kd-amber"><i class="ti ti-clock" style="font-size:10px"></i> 2 con +48h sin respuesta</div>
+        </div>
+        <div class="kpi ok" onclick="showView('reservas')">
+          <div class="kpi-top"><div class="kpi-icon ki-green"><i class="ti ti-calendar-check"></i></div></div>
+          <div class="kpi-val">12</div><div class="kpi-lbl">Reservas activas</div>
+          <div class="kpi-delta kd-green"><i class="ti ti-trending-up" style="font-size:10px"></i> +3 vs semana pasada</div>
+        </div>
+        <div class="kpi info" onclick="showView('reservas')">
+          <div class="kpi-top"><div class="kpi-icon ki-blue"><i class="ti ti-plane"></i></div></div>
+          <div class="kpi-val">7</div><div class="kpi-lbl">En tránsito</div>
+          <div class="kpi-delta kd-blue"><i class="ti ti-map-pin" style="font-size:10px"></i> 2 llegan hoy</div>
+        </div>
+        <div class="kpi neutral" onclick="showView('capacity')">
+          <div class="kpi-top"><div class="kpi-icon ki-gray"><i class="ti ti-box"></i></div></div>
+          <div class="kpi-val">68%</div><div class="kpi-lbl">Ocupación BSA promedio</div>
+          <div class="kpi-delta"><i class="ti ti-alert-triangle" style="font-size:10px;color:var(--err)"></i> <span style="color:var(--err)">1 BSA al 96%</span></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct"><i class="ti ti-clock-exclamation"></i> Solicitudes por cotizar</div><button class="abtn sec" onclick="showView('cotizaciones')">Ver todas</button></div>
+          <div class="frow">
+            <div class="swrap"><i class="ti ti-search"></i><input type="text" placeholder="Buscar..."></div>
+            <select class="fsel"><option>Todos los clientes</option><option>Florisol</option><option>AgroExport</option></select>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>N° / Cliente</th><th>Ruta</th><th>Producto</th><th>Recibida</th><th>Acción</th></tr></thead>
+            <tbody>
+              <tr class="urg"><td><div class="rnum">SOL-0044</div><div class="rsub">Florisol Cía. Ltda.</div></td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div></td><td>Rosas · 980 kg<span class="urgbadge">HOY</span></td><td><span style="color:var(--err);font-weight:700;font-size:12px">Hace 6h</span></td><td><button class="abtn pri" onclick="showView('cotizaciones')"><i class="ti ti-file-invoice"></i> Cotizar</button></td></tr>
+              <tr><td><div class="rnum">SOL-0043</div><div class="rsub">Tecnotrading S.A.</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div></td><td>Electrónicos · 1,200 kg</td><td>Hace 1 día</td><td><button class="abtn pri" onclick="showView('cotizaciones')"><i class="ti ti-file-invoice"></i> Cotizar</button></td></tr>
+              <tr><td><div class="rnum">SOL-0042</div><div class="rsub">AgroExport S.A.</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> BOG</div></td><td>Camarón · 640 kg</td><td>Hace 2 días</td><td><button class="abtn pri" onclick="showView('cotizaciones')"><i class="ti ti-file-invoice"></i> Cotizar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct"><i class="ti ti-alert-triangle"></i> Reservas que requieren atención</div><button class="abtn sec" onclick="showView('reservas')">Ver todas</button></div>
+          <div class="frow"><select class="fsel"><option>Todos los estados alerta</option><option>+48h sin carrier</option><option>Variación costo</option><option>AWB pendiente</option></select></div>
+          <table class="tbl">
+            <thead><tr><th>Reserva</th><th>Cliente / Ruta</th><th>Alerta</th><th>Estado</th><th>Acción</th></tr></thead>
+            <tbody>
+              <tr class="urg" onclick="showView('detalle-reserva')"><td><div class="rnum">RES-0718</div><div class="rsub">Embarque 28 jul</div></td><td><div style="font-weight:600;font-size:12px">Florisol</div><div class="route" style="font-size:12px">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div></td><td><span style="color:var(--err);font-weight:700;font-size:12px">+48h sin confirm.</span></td><td><span class="pill p-espera">Esp. carrier</span></td><td><button class="abtn warn" onclick="showView('detalle-reserva')">Gestionar</button></td></tr>
+              <tr onclick="showView('detalle-reserva')"><td><div class="rnum">RES-0712</div><div class="rsub">Embarque 02 ago</div></td><td><div style="font-weight:600;font-size:12px">AgroExport</div><div class="route" style="font-size:12px">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div></td><td><span style="color:var(--err);font-weight:700;font-size:12px">Variación +12%</span></td><td><span class="pill p-alerta">Re-aprobar</span></td><td><button class="abtn warn">Notificar</button></td></tr>
+              <tr onclick="showView('detalle-reserva')"><td><div class="rnum">RES-0705</div><div class="rsub">Embarque 25 jul</div></td><td><div style="font-weight:600;font-size:12px">Exp. Pacífico</div><div class="route" style="font-size:12px">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MAD</div></td><td><span style="color:var(--warn);font-weight:700;font-size:12px">AWB pendiente</span></td><td><span class="pill p-confirmado">Confirmado</span></td><td><button class="abtn sec">Reg. AWB</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="g3">
+        <div class="card">
+          <div class="ch"><div class="ct"><i class="ti ti-box"></i> Ocupación BSA — esta semana</div><button class="abtn sec" onclick="showView('capacity')" style="font-size:10px">Ver capacity</button></div>
+          <div>
+            <div class="bsa-row"><div style="min-width:130px"><div class="bsa-carrier">Latam · GYE→MIA</div><div class="bsa-route-lbl">Aéreo · 20 ton</div></div><div class="bsa-bw"><div class="bsa-bg"><div class="bsa-fill g" style="width:70%"></div></div><div class="bsa-nums">14/20 ton · 6 libres</div></div><span class="pill p-confirmado" style="font-size:10px;flex-shrink:0">70%</span></div>
+            <div class="bsa-row"><div style="min-width:130px"><div class="bsa-carrier">Latam · GYE→AMS</div><div class="bsa-route-lbl">Aéreo · 20 ton</div></div><div class="bsa-bw"><div class="bsa-bg"><div class="bsa-fill a" style="width:88%"></div></div><div class="bsa-nums">17.6/20 ton · 2.4 libres</div></div><span class="pill p-espera" style="font-size:10px;flex-shrink:0">88%</span></div>
+            <div class="bsa-row"><div style="min-width:130px"><div class="bsa-carrier">MSC · GYE→MIA</div><div class="bsa-route-lbl">Marítimo · 4 TEU</div></div><div class="bsa-bw"><div class="bsa-bg"><div class="bsa-fill g" style="width:50%"></div></div><div class="bsa-nums">2/4 TEU · 2 libres</div></div><span class="pill p-confirmado" style="font-size:10px;flex-shrink:0">50%</span></div>
+            <div class="bsa-row"><div style="min-width:130px"><div class="bsa-carrier">Avianca · UIO→MAD</div><div class="bsa-route-lbl">Aéreo · 20 ton</div></div><div class="bsa-bw"><div class="bsa-bg"><div class="bsa-fill r" style="width:96%"></div></div><div class="bsa-nums">19.2/20 ton · 0.8 libres</div></div><span class="pill p-alerta" style="font-size:10px;flex-shrink:0">96% ⚠</span></div>
+          </div>
+          <div style="border-top:1px solid #F0F0F0"><div class="chart-wrap"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px"><span>Reservas cerradas / semana</span><span style="color:var(--gd)">↑18% vs mes anterior</span></div><div class="chart-bars"><div class="chart-bar-wrap"><div class="chart-bar acc" style="height:40%"></div><div class="chart-bar-val">6</div><div class="chart-bar-lbl">S-4</div></div><div class="chart-bar-wrap"><div class="chart-bar acc" style="height:55%"></div><div class="chart-bar-val">8</div><div class="chart-bar-lbl">S-3</div></div><div class="chart-bar-wrap"><div class="chart-bar acc" style="height:65%"></div><div class="chart-bar-val">10</div><div class="chart-bar-lbl">S-2</div></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:75%"></div><div class="chart-bar-val">12</div><div class="chart-bar-lbl">S-1</div></div><div class="chart-bar-wrap"><div class="chart-bar" style="height:50%;opacity:.4;border:2px dashed var(--g);background:transparent;border-radius:4px 4px 0 0"></div><div class="chart-bar-val" style="color:#bbb">8*</div><div class="chart-bar-lbl">Esta</div></div></div></div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct"><i class="ti ti-activity"></i> Actividad reciente</div><span style="font-size:11px;color:var(--muted)">Últimas 24h</span></div>
+          <div class="act-item"><div class="act-icon ai-green"><i class="ti ti-circle-check"></i></div><div style="flex:1"><div class="act-title"><strong>COT-2025-0838</strong> aprobada por cliente</div><div class="act-sub">AgroExport · GYE→BOG · $1,080</div></div><div class="act-time">Hace 2h</div></div>
+          <div class="act-item"><div class="act-icon ai-blue"><i class="ti ti-calendar-plus"></i></div><div style="flex:1"><div class="act-title">Nueva solicitud <strong>SOL-2025-0044</strong></div><div class="act-sub">Florisol · UIO→MIA · 980 kg</div></div><div class="act-time">Hace 6h</div></div>
+          <div class="act-item"><div class="act-icon ai-amber"><i class="ti ti-alert-triangle"></i></div><div style="flex:1"><div class="act-title"><strong>RES-2025-0712</strong> variación +12%</div><div class="act-sub">AgroExport · Copa Cargo · Re-aprobación</div></div><div class="act-time">Hace 8h</div></div>
+          <div class="act-item"><div class="act-icon ai-red"><i class="ti ti-clock"></i></div><div style="flex:1"><div class="act-title"><strong>RES-2025-0718</strong> carrier sin respuesta</div><div class="act-sub">Florisol · Latam Cargo · +48h</div></div><div class="act-time">Hace 10h</div></div>
+          <div class="act-item"><div class="act-icon ai-green"><i class="ti ti-plane-arrival"></i></div><div style="flex:1"><div class="act-title"><strong>RES-2025-0689</strong> entregada en destino</div><div class="act-sub">Florisol · UIO→MIA · AWB 004-98765432</div></div><div class="act-time">Hace 14h</div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct"><i class="ti ti-checklist"></i> Tareas pendientes</div><span style="font-size:11px;color:var(--muted)">8 tareas · 3 urgentes</span></div>
+          <div class="task-item" onclick="showView('cotizaciones')"><div class="task-prio high"></div><div style="flex:1"><div class="task-title">Cotizar SOL-0044 — Florisol</div><div class="task-sub">UIO→MIA · Rosas 980 kg</div></div><div class="task-due urgent">Hoy</div></div>
+          <div class="task-item" onclick="showView('detalle-reserva')"><div class="task-prio high"></div><div style="flex:1"><div class="task-title">Carrier alternativo RES-0718</div><div class="task-sub">Latam no responde · +48h</div></div><div class="task-due urgent">Urgente</div></div>
+          <div class="task-item"><div class="task-prio high"></div><div style="flex:1"><div class="task-title">Notificar variación RES-0712</div><div class="task-sub">Copa Cargo · +12%</div></div><div class="task-due urgent">Pendiente</div></div>
+          <div class="task-item" onclick="showView('detalle-reserva')"><div class="task-prio med"></div><div style="flex:1"><div class="task-title">Registrar AWB — RES-0705</div><div class="task-sub">Exp. Pacífico · UIO→MAD</div></div><div class="task-due soon">Esta semana</div></div>
+          <div class="task-item" onclick="showView('cotizaciones')"><div class="task-prio med"></div><div style="flex:1"><div class="task-title">Cotizar SOL-0043 — Tecnotrading</div><div class="task-sub">GYE→AMS · Electrónicos</div></div><div class="task-due soon">Mañana</div></div>
+          <div class="task-item"><div class="task-prio low"></div><div style="flex:1"><div class="task-title">Renovar BSA Avianca UIO→MAD</div><div class="task-sub">Vence 31-oct · 96% ocupado</div></div><div class="task-due ok">Próximo mes</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct"><i class="ti ti-chart-bar"></i> Resumen del mes — julio 2025</div><div style="display:flex;gap:8px"><select class="fsel" style="height:30px"><option>Julio 2025</option><option>Junio 2025</option></select><select class="fsel" style="height:30px"><option>Todas las sucursales</option><option>GYE</option><option>UIO</option></select></div></div>
+        <div class="stat-strip"><div class="stat-cell"><div class="stat-val">32</div><div class="stat-lbl">Solicitudes recibidas</div></div><div class="stat-cell"><div class="stat-val g">28</div><div class="stat-lbl">Cotizaciones generadas</div></div><div class="stat-cell"><div class="stat-val g">21</div><div class="stat-lbl">Reservas cerradas</div></div><div class="stat-cell"><div class="stat-val a">2</div><div class="stat-lbl">Variaciones de costo</div></div></div>
+        <div class="stat-strip" style="border-bottom:none"><div class="stat-cell"><div class="stat-val b">$148,320</div><div class="stat-lbl">Ingresos (USD)</div></div><div class="stat-cell"><div class="stat-val g">87.5%</div><div class="stat-lbl">Tasa de conversión</div></div><div class="stat-cell"><div class="stat-val g">29.4%</div><div class="stat-lbl">Margen bruto promedio</div></div><div class="stat-cell"><div class="stat-val r">3</div><div class="stat-lbl">Spots por falta BSA</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ COTIZACIONES ═══ -->
+  <div class="view active" id="view-cotizaciones">
+    <div class="sec-head"><div><div class="sec-title">Cotizaciones</div><div class="sec-sub">Solicitudes recibidas y cotizaciones en proceso</div></div><button class="btn pri" onclick="openModal('modal-nueva-cot')"><i class="ti ti-plus"></i> Nueva cotización manual</button></div>
+    <div class="card">
+      <div class="frow">
+        <div class="swrap"><i class="ti ti-search"></i><input type="text" placeholder="Buscar por N°, cliente, producto, ruta..."></div>
+        <select class="fsel"><option>Todos los estados</option><option>Solicitud recibida</option><option>En cotización</option><option>Esperando aprobación</option><option>Aprobada</option><option>Rechazada / ajuste</option></select>
+        <select class="fsel"><option>Todos los clientes</option><option>Exportadora del Pacífico</option><option>Florisol Cía. Ltda.</option><option>Tecnotrading S.A.</option><option>AgroExport S.A.</option></select>
+        <select class="fsel"><option>Toda modalidad</option><option>Aérea</option><option>Marítima</option><option>Terrestre</option></select>
+        <select class="fsel"><option>Último mes</option><option>Últimos 3 meses</option><option>Este año</option></select>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>N° / Tipo</th><th>Cliente</th><th>Ruta</th><th>Producto / Peso</th><th>Embarque</th><th>Precio venta</th><th>Ejecutivo</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr class="urg"><td><div class="rnum">SOL-2025-0044</div><div class="rsub">Solicitud del cliente</div></td><td><div style="font-weight:600">Florisol Cía. Ltda.</div></td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div><div class="rsub">Aéreo</div></td><td>Rosas frescas · 980 kg<span class="urgbadge">URGENTE</span></td><td>20 ago 2025</td><td style="color:#bbb">—</td><td style="color:#bbb">Sin asignar</td><td><span class="pill p-nuevo">Recibida</span></td><td><button class="abtn pri"><i class="ti ti-file-invoice"></i> Cotizar</button></td></tr>
+            <tr><td><div class="rnum">COT-2025-0841</div><div class="rsub">Cotización generada</div></td><td><div style="font-weight:600">Exportadora del Pacífico</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div><div class="rsub">Aéreo · BSA</div></td><td>Flores frescas · 1,250 kg</td><td>15 ago 2025</td><td style="font-weight:700;color:var(--gd)">$2,312.50</td><td>M. Estrella</td><td><span class="pill p-revision">Esp. aprobación</span></td><td><div class="abtn-grp"><button class="abtn sec"><i class="ti ti-eye"></i> Ver</button></div></td></tr>
+            <tr style="background:rgba(128,186,39,0.02)"><td><div class="rnum">COT-2025-0838</div><div class="rsub">Cotización generada</div></td><td><div style="font-weight:600">AgroExport S.A.</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> BOG</div><div class="rsub">Terrestre · Spot</div></td><td>Brócoli · 720 kg</td><td>10 ago 2025</td><td style="font-weight:700;color:var(--gd)">$1,080.00</td><td>M. Estrella</td><td><span class="pill p-aprobada"><i class="ti ti-circle-check" style="font-size:10px"></i> Aprobada</span></td><td><div class="abtn-grp"><button class="abtn pri" onclick="openModal('modal-convertir')"><i class="ti ti-calendar-plus"></i> Crear reserva</button><button class="abtn sec"><i class="ti ti-eye"></i></button></div></td></tr>
+            <tr><td><div class="rnum">SOL-2025-0043</div><div class="rsub">Solicitud del cliente</div></td><td><div style="font-weight:600">Tecnotrading S.A.</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div><div class="rsub">Marítimo</div></td><td>Electrónicos · 1,200 kg</td><td>01 sep 2025</td><td style="color:#bbb">—</td><td style="color:#bbb">Sin asignar</td><td><span class="pill p-nuevo">Recibida</span></td><td><button class="abtn pri"><i class="ti ti-file-invoice"></i> Cotizar</button></td></tr>
+            <tr><td><div class="rnum">COT-2025-0835</div><div class="rsub">Cotización generada</div></td><td><div style="font-weight:600">Florisol Cía. Ltda.</div></td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div><div class="rsub">Aéreo · BSA</div></td><td>Brócoli · 800 kg</td><td>28 jul 2025</td><td style="font-weight:700;color:var(--gd)">$1,480.00</td><td>M. Estrella</td><td><span class="pill p-rechazada">Ajuste solicitado</span></td><td><div class="abtn-grp"><button class="abtn warn"><i class="ti ti-edit"></i> Ajustar</button><button class="abtn sec"><i class="ti ti-eye"></i></button></div></td></tr>
+            <tr><td><div class="rnum">COT-2025-0821</div><div class="rsub">Cotización generada</div></td><td><div style="font-weight:600">Exportadora del Pacífico</div></td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MAD</div><div class="rsub">Aéreo · Spot</div></td><td>Rosas frescas · 1,100 kg</td><td>25 jul 2025</td><td style="font-weight:700;color:var(--gd)">$2,035.00</td><td>R. Paredes</td><td><span class="pill p-reservado">En reserva</span></td><td><button class="abtn info" onclick="showView('reservas')"><i class="ti ti-arrow-right"></i> Ver reserva</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ RESERVAS LISTADO ═══ -->
+  <div class="view" id="view-reservas">
+    <div class="sec-head"><div><div class="sec-title">Reservas</div><div class="sec-sub">Gestión operativa de reservas activas y cerradas</div></div></div>
+    <div class="card">
+      <div class="frow">
+        <div class="swrap"><i class="ti ti-search"></i><input type="text" placeholder="Buscar por N°, cliente, AWB, BL..."></div>
+        <select class="fsel"><option>Todos los estados</option><option>Reservado</option><option>Esp. confirmación</option><option>Confirmado</option><option>En tránsito</option><option>Entregado</option><option>Cerrado</option></select>
+        <select class="fsel"><option>Todos los clientes</option><option>Exportadora del Pacífico</option><option>Florisol</option><option>AgroExport</option></select>
+        <select class="fsel"><option>Toda modalidad</option><option>Aérea</option><option>Marítima</option><option>Terrestre</option></select>
+        <select class="fsel"><option>Todos los carriers</option><option>Latam Cargo</option><option>Avianca Cargo</option><option>MSC</option></select>
+        <select class="fsel"><option>Últimos 3 meses</option><option>Este mes</option><option>Últimos 6 meses</option></select>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>N° Reserva</th><th>Cliente</th><th>Ruta</th><th>Producto / Carga</th><th>Embarque</th><th>Carrier</th><th>AWB / BL</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr class="urg" onclick="showView('detalle-reserva')"><td><div class="rnum">RES-2025-0718</div><div class="rsub">Florisol · Aéreo</div></td><td>Florisol Cía. Ltda.</td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> AMS</div></td><td>Brócoli congelado<br><span class="rsub">800 kg · 20 cajas</span></td><td>28 jul 2025</td><td>Latam Cargo</td><td><span style="color:var(--err);font-weight:700;font-size:12px">Pendiente</span></td><td><span class="pill p-espera">Esp. confirm.<span class="urgbadge">+48H</span></span></td><td><button class="abtn warn" onclick="showView('detalle-reserva')">Gestionar</button></td></tr>
+            <tr onclick="showView('detalle-reserva')"><td><div class="rnum">RES-2025-0712</div></td><td>AgroExport S.A.</td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div></td><td>Maracuyá · 540 kg<br><span class="rsub">18 pallets</span></td><td>02 ago 2025</td><td>Copa Cargo</td><td><span style="color:var(--err);font-weight:700;font-size:12px">Pendiente</span></td><td><span class="pill p-alerta">Variación 12%</span></td><td><button class="abtn warn">Notificar</button></td></tr>
+            <tr onclick="showView('detalle-reserva')"><td><div class="rnum">RES-2025-0705</div></td><td>Exportadora del Pacífico</td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MAD</div></td><td>Rosas frescas · 1,100 kg<br><span class="rsub">38 pallets</span></td><td>25 jul 2025</td><td>Avianca Cargo</td><td><span style="color:var(--warn);font-weight:700;font-size:12px">Sin AWB</span></td><td><span class="pill p-confirmado">Confirmado</span></td><td><button class="abtn sec" onclick="showView('detalle-reserva')">Reg. AWB</button></td></tr>
+            <tr><td><div class="rnum">RES-2025-0698</div></td><td>Exportadora del Pacífico</td><td><div class="route">GYE <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div></td><td>Camarón · 4,200 kg<br><span class="rsub">Cont. 20'</span></td><td>05 ago 2025</td><td>MSC</td><td style="color:var(--gd);font-weight:700;font-size:12px">MSCUQ1234567</td><td><span class="pill p-transito">En tránsito</span></td><td><button class="abtn sec" onclick="showView('detalle-reserva')"><i class="ti ti-eye"></i></button></td></tr>
+            <tr><td><div class="rnum">RES-2025-0689</div></td><td>Florisol Cía. Ltda.</td><td><div class="route">UIO <span class="rarr"><i class="ti ti-arrow-right"></i></span> MIA</div></td><td>Rosas · 1,050 kg<br><span class="rsub">36 pallets</span></td><td>15 jul 2025</td><td>Latam Cargo</td><td style="color:var(--gd);font-weight:700;font-size:12px">004-98765432</td><td><span class="pill p-entregado">Entregado</span></td><td><button class="abtn sec" onclick="showView('detalle-reserva')"><i class="ti ti-eye"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ DETALLE RESERVA ═══ -->
+  <div class="view" id="view-detalle-reserva">
+    <button class="btn sec" style="margin-bottom:16px;height:32px;font-size:12px" onclick="showView('reservas')"><i class="ti ti-arrow-left"></i> Volver a reservas</button>
+    <div class="res-hdr">
+      <div class="res-hdr-top">
+        <div><div class="res-id">RES-2025-0718</div><div class="res-sub">Creada 10 jul 2025 · desde COT-2025-0835 aprobada por cliente</div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="pill p-espera"><i class="ti ti-hourglass" style="font-size:10px"></i> Esp. confirmación carrier</span><span class="pill p-spot">Spot</span></div>
+      </div>
+      <div class="res-meta">
+        <div><div class="rm-l">Cliente</div><div class="rm-v">Florisol Cía. Ltda.</div></div>
+        <div><div class="rm-l">Ruta</div><div class="rm-v">GYE → AMS</div></div>
+        <div><div class="rm-l">Modalidad</div><div class="rm-v">Aéreo</div></div>
+        <div><div class="rm-l">Producto</div><div class="rm-v">Brócoli congelado</div></div>
+        <div><div class="rm-l">Peso / Carga</div><div class="rm-v">800 kg · 20 cajas</div></div>
+        <div><div class="rm-l">Embarque</div><div class="rm-v">28 jul 2025</div></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="ch"><div class="ct"><i class="ti ti-route-2"></i> Gestión de espacio y confirmación de carrier</div><span style="font-size:11px;color:var(--muted)">Paso 2 de 4 activo</span></div>
+          <div class="cb-p">
+            <div class="pstep done"><div class="psh" onclick="tog('pb1','pi1')"><div class="psl"><div class="psn done"><i class="ti ti-check" style="font-size:11px"></i></div><div><div class="pst">1. Validación de disponibilidad BSA</div><div class="pss">Completado · 12 jul · Sin cupo BSA</div></div></div><div style="display:flex;align-items:center;gap:8px"><span class="pill" style="background:rgba(224,90,43,0.1);color:var(--err);font-size:10px">Sin cupo</span><i class="ti ti-chevron-down" id="pi1" style="color:#bbb;font-size:13px"></i></div></div><div class="psb" id="pb1" style="display:none"><div class="bsa-inline nok"><i class="ti ti-alert-triangle"></i><div><strong style="color:#78400E">BSA GYE→AMS al 88% — Sin cupo para 800 kg</strong><br><span style="color:#666;font-size:11px;margin-top:3px;display:block">Latam Cargo · 20 ton contratadas · 17.6 ton asignadas. Se inició proceso Spot.</span></div></div></div></div>
+            <div class="pstep active"><div class="psh"><div class="psl"><div class="psn active"><i class="ti ti-clock" style="font-size:11px"></i></div><div><div class="pst">2. Solicitud y confirmación de espacio al carrier</div><div class="pss">En espera · Latam Cargo · LC-REQ-2025-0341 · +48h sin respuesta</div></div></div><span class="pill p-espera">+48h</span></div><div class="psb">
+              <div class="alert warn"><i class="ti ti-alert-triangle"></i> Sin respuesta de Latam Cargo tras 48h. Registre la confirmación o cambie de carrier.</div>
+              <div style="background:#F7F8FA;border-radius:8px;padding:10px 14px;margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:12px"><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Carrier</div><div style="font-weight:600">Latam Cargo</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Fecha solicitud</div><div style="font-weight:600">12 jul · 09:14</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Referencia</div><div style="font-weight:600">LC-REQ-2025-0341</div></div></div>
+              <div class="fld" style="margin-bottom:12px"><label class="lbl">¿Qué ocurrió? <span class="rq">*</span></label><div class="radio-grp"><button class="rb" id="r-ok" onclick="setR('ok')"><i class="ti ti-circle-check"></i> Carrier confirmó</button><button class="rb" id="r-no" onclick="setR('no')"><i class="ti ti-circle-x"></i> Carrier rechazó</button><button class="rb" id="r-alt" onclick="setR('alt')"><i class="ti ti-refresh"></i> Cambiar carrier</button></div></div>
+              <div id="panel-ok" style="display:none"><div class="fg c3"><div class="fld"><label class="lbl">N° booking <span class="rq">*</span></label><input class="inp" type="text" placeholder="LC-BKG-00123" id="inp-bkg"></div><div class="fld"><label class="lbl">Fecha confirmación</label><input class="inp" type="datetime-local"></div><div class="fld"><label class="lbl">Tarifa confirmada (USD/kg)</label><input class="inp" type="number" placeholder="0.00" id="inp-tc" oninput="calcVar()"></div></div></div>
+              <div id="panel-no" style="display:none"><div class="alert err"><i class="ti ti-alert-circle"></i> Carrier rechazó. Defina la acción a tomar.</div><div class="fg c2"><div class="fld"><label class="lbl">Motivo</label><select class="sel"><option>Sin disponibilidad</option><option>Restricción de carga</option><option>Otro</option></select></div><div class="fld"><label class="lbl">Acción <span class="rq">*</span></label><select class="sel"><option>Solicitar a otro carrier</option><option>Reprogramar con cliente</option><option>Cancelar reserva</option></select></div></div></div>
+              <div id="panel-alt" style="display:none"><div class="alert info"><i class="ti ti-info-circle"></i> Si la tarifa difiere, el sistema calculará la variación vs. cotización aprobada.</div><div class="fg c3"><div class="fld"><label class="lbl">Nuevo carrier <span class="rq">*</span></label><select class="sel"><option value="">Seleccionar...</option><option>Avianca Cargo</option><option>Copa Airlines Cargo</option><option>American Airlines Cargo</option></select></div><div class="fld"><label class="lbl">Tarifa spot (USD/kg)</label><input class="inp" type="number" placeholder="0.00" id="inp-ta" oninput="calcVar()"></div><div class="fld"><label class="lbl">Disponibilidad</label><select class="sel"><option>Pendiente</option><option>Confirmada</option></select></div></div></div>
+              <div class="btn-row" style="margin-top:12px"><button class="btn sec">Guardar avance</button><button class="btn pri" onclick="confirmar()"><i class="ti ti-arrow-right"></i> Confirmar y avanzar al paso 3</button></div>
+            </div></div>
+            <div class="pstep locked" id="step3"><div class="psh"><div class="psl"><div class="psn locked">3</div><div><div class="pst">3. Asignar carrier y registrar AWB / BL</div><div class="pss">Disponible tras confirmar espacio</div></div></div><span style="font-size:11px;color:#ccc"><i class="ti ti-lock" style="font-size:12px"></i> Bloqueado</span></div><div class="psb"><div class="fg c3" style="margin-bottom:10px"><div class="fld"><label class="lbl">Carrier asignado</label><input class="inp ro" type="text" placeholder="Pendiente" readonly id="inp-carrier-asig"></div><div class="fld"><label class="lbl">AWB / BL <span class="rq">*</span></label><input class="inp" type="text" placeholder="004-12345678" id="inp-awb"></div><div class="fld"><label class="lbl">Fecha vuelo / zarpe <span class="rq">*</span></label><input class="inp" type="date"></div></div><div class="fg c3"><div class="fld"><label class="lbl">N° vuelo / nave</label><input class="inp" type="text" placeholder="LA-805"></div><div class="fld"><label class="lbl">ETA destino</label><input class="inp" type="date"></div><div class="fld"><label class="lbl">N° contenedor</label><input class="inp" type="text" placeholder="Solo marítimo"></div></div><div class="btn-row" style="margin-top:10px"><button class="btn sec">Guardar</button><button class="btn pri" onclick="avanzarPaso4()"><i class="ti ti-arrow-right"></i> Avanzar al paso 4</button></div></div></div>
+            <div class="pstep locked" id="step4"><div class="psh"><div class="psl"><div class="psn locked">4</div><div><div class="pst">4. Validación de costo y cierre de reserva</div><div class="pss">El sistema compara costo real vs. cotización aprobada</div></div></div><span style="font-size:11px;color:#ccc"><i class="ti ti-lock" style="font-size:12px"></i> Bloqueado</span></div><div class="psb"><div id="var-result"></div><div class="fg c1" style="margin-top:10px"><div class="fld"><label class="lbl">Instrucciones de embarque</label><textarea class="inp" placeholder="Instrucciones para agente en destino, cliente, etc."></textarea></div></div><div class="btn-row" style="margin-top:8px"><button class="btn sec">Guardar</button><button class="btn pri" onclick="cerrar()"><i class="ti ti-circle-check"></i> Cerrar reserva y notificar cliente</button></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card"><div class="ch"><div class="ct"><i class="ti ti-file-invoice"></i> Cotización aprobada</div></div><div class="cb-p"><div class="costo-row"><span class="cr-lbl">Precio vendido</span><span class="cr-val g">$1,480.00</span></div><div class="costo-row"><span class="cr-lbl">Costo cotizado</span><span class="cr-val">$1,021.80</span></div><div class="costo-row"><span class="cr-lbl">Tarifa base</span><span class="cr-val">$1.85/kg · BSA</span></div><div class="costo-row"><span class="cr-lbl">Margen cotizado</span><span class="cr-val g">31%</span></div><div style="margin-top:10px;padding-top:10px;border-top:1px solid #F0F0F0;font-size:11px;color:#666;line-height:1.8"><strong style="font-size:10px;color:#bbb;text-transform:uppercase;letter-spacing:.5px">Umbrales de alerta</strong><br>&lt;3% → Ejecutivo · 3–10% → Supervisor · &gt;10% → Cliente</div></div></div>
+        <div class="card"><div class="ch"><div class="ct"><i class="ti ti-timeline"></i> Historial</div></div><div class="cb-p"><div class="tline"><div class="tl-i"><div class="tl-d done"><i class="ti ti-check" style="font-size:9px"></i></div><div><div class="tl-t">Solicitud creada por cliente</div><div class="tl-dt">08 jul · 10:22</div></div></div><div class="tl-i"><div class="tl-d done"><i class="ti ti-check" style="font-size:9px"></i></div><div><div class="tl-t">COT-2025-0835 generada</div><div class="tl-s">$1,480 · M. Estrella</div><div class="tl-dt">09 jul · 14:05</div></div></div><div class="tl-i"><div class="tl-d done"><i class="ti ti-check" style="font-size:9px"></i></div><div><div class="tl-t">Aprobada por cliente en portal</div><div class="tl-dt">10 jul · 09:47</div></div></div><div class="tl-i"><div class="tl-d done"><i class="ti ti-check" style="font-size:9px"></i></div><div><div class="tl-t">Reserva RES-2025-0718 creada</div><div class="tl-dt">10 jul · 15:10</div></div></div><div class="tl-i"><div class="tl-d done"><i class="ti ti-check" style="font-size:9px"></i></div><div><div class="tl-t">BSA sin cupo — inicia Spot</div><div class="tl-dt">12 jul · 09:00</div></div></div><div class="tl-i"><div class="tl-d cur"><i class="ti ti-clock" style="font-size:9px"></i></div><div><div class="tl-t" style="color:var(--warn)">Solicitud Spot enviada a Latam · +48h</div><div class="tl-dt">12 jul · 09:14</div></div></div><div class="tl-i"><div class="tl-d pend">5</div><div><div class="tl-t" style="color:#ccc">Confirmación carrier</div></div></div><div class="tl-i"><div class="tl-d pend">6</div><div><div class="tl-t" style="color:#ccc">AWB · Embarque</div></div></div><div class="tl-i"><div class="tl-d pend">7</div><div><div class="tl-t" style="color:#ccc">Reserva cerrada</div></div></div></div></div></div>
+        <div class="card"><div class="ch"><div class="ct"><i class="ti ti-bell"></i> Notificaciones al cliente</div></div><div class="cb-p"><div class="notif-i"><div class="ndot2 sent"></div><div><div class="ntxt">Cotización enviada para aprobación</div><div class="ndt">09 jul · 14:06 · Email + portal</div></div></div><div class="notif-i"><div class="ndot2 sent"></div><div><div class="ntxt">Reserva creada y confirmada</div><div class="ndt">10 jul · 15:11 · Email + portal</div></div></div><div class="notif-i"><div class="ndot2 pend"></div><div><div class="ntxt" style="color:var(--warn)">Confirmación carrier — pendiente</div><div class="ndt">Se enviará al confirmar</div></div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CAPACITY PLANNING ═══ -->
+  <div class="view" id="view-capacity">
+    <div class="sec-head"><div><div class="sec-title">Capacity Planning</div><div class="sec-sub">Ocupación global de BSA y planificación de espacio · Vista estratégica</div></div><div style="display:flex;gap:8px;align-items:center"><select class="fsel" style="height:36px"><option>Semana 14–20 jul 2025</option><option>Semana 21–27 jul 2025</option><option>Semana 28 jul–3 ago 2025</option></select><button class="btn sec"><i class="ti ti-download"></i> Exportar</button></div></div>
+    <div class="cap-kpi-row">
+      <div class="cap-kpi"><div class="cv g">68%</div><div class="cl2">Ocupación promedio BSA</div></div>
+      <div class="cap-kpi"><div class="cv a">1</div><div class="cl2">BSA crítico (&gt;90%)</div></div>
+      <div class="cap-kpi"><div class="cv" style="color:var(--s)">4</div><div class="cl2">Contratos BSA activos</div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct"><i class="ti ti-contract"></i> Contratos BSA activos — semana actual</div><span style="font-size:11px;color:var(--muted)">Clic en cada BSA para ver las reservas que consumen ese espacio</span></div>
+      <div>
+        <div class="bsa-row" onclick="togBSA('bsa1')"><div style="min-width:160px"><div class="bsa-carrier">Latam Cargo</div><div class="bsa-route-lbl">GYE → MIA · Aéreo · Vence 31-dic-2025</div></div><div class="bsa-bw"><div class="bsa-bg"><div class="bsa-fill g" style="width:70%"></div></div><div class="bsa-nums">14 ton usadas de 20 ton · <strong style="color:var(--gd)">6 ton disponibles</strong></div></div><span class="pill p-confirmado" style="flex-shrink:0">70%</span><i class="ti ti-chevron-down" id="ibsa1" style="color:#bbb;font-size:14px;flex-shrink:0"></i></div>
+        <div class="bsa-reservas" id="bsa1"><div class="bsa-res-title">Reservas que consumen este BSA esta semana</div><div class="bsa-res-item"><span><strong>RES-2025-0698</strong> · Exportadora del Pacífico · Camarón · 4,200 kg</span><span class="pill p-transito" style="font-size:10px">En tránsito</span></div><div class="bsa-res-item"><span><strong>RES-2025-0701</strong> · AgroExport · Mango · 3,800 kg</span><span class="pill p-confirmado" style="font-size:10px">Confirmado</span></div><div class="bsa-res-item"><span><strong>RES-2025-0706</strong> · Tecnotrading · Textiles · 6,000 kg</span><span class="pill p-reservado" style="font-size:10px">Reservado</span></div></div>
+        <div class="bsa-row" onclick="togBSA('bsa2')"><div style="min-width:160px"><div class="bsa-carrier">Latam Cargo</div><div class="bsa-route-lbl">GYE → AMS · Aéreo · Vence 31-dic-2025</div></div><div class="bsa-bw"><div class="bsa-bg"><div class="bsa-fill a" style="width:88%"></div></div><div class="bsa-nums">17.6 ton usadas de 20 ton · <strong style="color:var(--warn)">2.4 ton disponibles</strong></div></div><span class="pill p-espera" style="flex-shrink:0">88%</span><i class="ti ti-chevron-down" id="ibsa2" style="color:#bbb;font-size:14px;flex-shrink:0"></i></div>
+        <div class="bsa-reservas" id="bsa2"><div class="bsa-res-title">Reservas que consumen este BSA esta semana</div><div class="bsa-res-item"><span><strong>RES-2025-0705</strong> · Exportadora del Pacífico · Rosas · 1,100 kg</span><span class="pill p-confirmado" style="font-size:10px">Confirmado</span></div><div class="bsa-res-item"><span><strong>RES-2025-0710</strong> · Florisol · Brócoli · 9,200 kg</span><span class="pill p-transito" style="font-size:10px">En tránsito</span></div><div class="bsa-res-item" style="color:var(--err);font-size:12px"><i class="ti ti-alert-triangle" style="font-size:12px"></i> RES-2025-0718 · Florisol · 800 kg → Sin cupo — proceso Spot activo</div></div>
+        <div class="bsa-row" onclick="togBSA('bsa3')"><div style="min-width:160px"><div class="bsa-carrier">MSC</div><div class="bsa-route-lbl">GYE → MIA · Marítimo · Vence 28-feb-2026</div></div><div class="bsa-bw"><div class="bsa-bg"><div class="bsa-fill g" style="width:50%"></div></div><div class="bsa-nums">2 TEU usados de 4 TEU · <strong style="color:var(--gd)">2 TEU disponibles</strong></div></div><span class="pill p-confirmado" style="flex-shrink:0">50%</span><i class="ti ti-chevron-down" id="ibsa3" style="color:#bbb;font-size:14px;flex-shrink:0"></i></div>
+        <div class="bsa-reservas" id="bsa3"><div class="bsa-res-title">Reservas que consumen este BSA esta semana</div><div class="bsa-res-item"><span><strong>RES-2025-0698</strong> · Exportadora del Pacífico · Camarón · Cont. 20'</span><span class="pill p-transito" style="font-size:10px">En tránsito</span></div><div class="bsa-res-item"><span><strong>RES-2025-0703</strong> · AgroExport · Maracuyá · Cont. 20'</span><span class="pill p-confirmado" style="font-size:10px">Confirmado</span></div></div>
+        <div class="bsa-row" onclick="togBSA('bsa4')"><div style="min-width:160px"><div class="bsa-carrier">Avianca Cargo</div><div class="bsa-route-lbl">UIO → MAD · Aéreo · Vence 31-oct-2025</div></div><div class="bsa-bw"><div class="bsa-bg"><div class="bsa-fill r" style="width:96%"></div></div><div class="bsa-nums">19.2 ton usadas de 20 ton · <strong style="color:var(--err)">0.8 ton disponibles ⚠</strong></div></div><span class="pill p-alerta" style="flex-shrink:0">96% ⚠</span><i class="ti ti-chevron-down" id="ibsa4" style="color:#bbb;font-size:14px;flex-shrink:0"></i></div>
+        <div class="bsa-reservas" id="bsa4"><div class="bsa-res-title">Reservas que consumen este BSA esta semana</div><div class="bsa-res-item"><span><strong>RES-2025-0705</strong> · Exportadora del Pacífico · Rosas · 1,100 kg</span><span class="pill p-confirmado" style="font-size:10px">Confirmado</span></div><div class="bsa-res-item"><span><strong>RES-2025-0714</strong> · AgroExport · Cacao · 9,500 kg</span><span class="pill p-reservado" style="font-size:10px">Reservado</span></div><div class="bsa-res-item" style="color:var(--err);font-size:12px"><i class="ti ti-alert-triangle" style="font-size:12px"></i> BSA casi agotado — nuevas solicitudes en esta ruta irán a Spot</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CARRIERS ═══ -->
+  <div class="view" id="view-carriers">
+    <div class="sec-head"><div><div class="sec-title">Carriers</div><div class="sec-sub">Catálogo de transportistas · alimenta cotizaciones y reservas</div></div><button class="btn pri" onclick="openModal('modal-carrier-detail')"><i class="ti ti-plus"></i> Agregar carrier</button></div>
+    <div class="frow" style="background:var(--w);border-radius:var(--r);border:1px solid var(--bd);margin-bottom:18px;box-shadow:var(--sh)">
+      <div class="swrap"><i class="ti ti-search"></i><input type="text" placeholder="Buscar carrier, ruta..."></div>
+      <select class="fsel"><option>Todas las modalidades</option><option>Aéreo</option><option>Marítimo</option><option>Terrestre</option></select>
+      <select class="fsel"><option>Todos</option><option>Con BSA activo</option><option>Sin BSA</option></select>
+    </div>
+    <div class="carrier-grid">
+      <div class="carrier-card" onclick="openModal('modal-carrier-detail')"><div class="carrier-ch"><div><div class="carrier-icon ci-aereo"><i class="ti ti-plane"></i></div><div class="carrier-name">Latam Cargo</div><div class="carrier-type">Aéreo · Internacional</div></div><span class="pill p-bsa">BSA activo</span></div><div class="carrier-cb"><div class="carrier-stat"><span class="cs-lbl">Contratos BSA</span><span class="cs-val g">2 activos</span></div><div class="carrier-stat"><span class="cs-lbl">Reservas este mes</span><span class="cs-val">8</span></div><div class="carrier-stat"><span class="cs-lbl">Tarifa promedio</span><span class="cs-val">$1.85/kg</span></div><div class="carrier-stat"><span class="cs-lbl">Contacto</span><span class="cs-val">José Alvarado</span></div><div class="carrier-stat"><span class="cs-lbl">Estado</span><span class="cs-val g">Activo</span></div><div class="route-tags"><span class="route-tag">GYE→MIA</span><span class="route-tag">GYE→AMS</span><span class="route-tag">UIO→BOG</span></div></div></div>
+      <div class="carrier-card" onclick="openModal('modal-carrier-detail')"><div class="carrier-ch"><div><div class="carrier-icon ci-aereo"><i class="ti ti-plane"></i></div><div class="carrier-name">Avianca Cargo</div><div class="carrier-type">Aéreo · Internacional</div></div><span class="pill p-bsa">BSA activo</span></div><div class="carrier-cb"><div class="carrier-stat"><span class="cs-lbl">Contratos BSA</span><span class="cs-val g">1 activo</span></div><div class="carrier-stat"><span class="cs-lbl">Reservas este mes</span><span class="cs-val">5</span></div><div class="carrier-stat"><span class="cs-lbl">Tarifa promedio</span><span class="cs-val">$2.10/kg</span></div><div class="carrier-stat"><span class="cs-lbl">Contacto</span><span class="cs-val">Andrea Ríos</span></div><div class="carrier-stat"><span class="cs-lbl">Estado</span><span class="cs-val g">Activo</span></div><div class="route-tags"><span class="route-tag">UIO→MAD</span><span class="route-tag">GYE→BOG</span><span class="route-tag">UIO→MIA</span></div></div></div>
+      <div class="carrier-card" onclick="openModal('modal-carrier-detail')"><div class="carrier-ch"><div><div class="carrier-icon ci-aereo"><i class="ti ti-plane"></i></div><div class="carrier-name">Copa Airlines Cargo</div><div class="carrier-type">Aéreo · Regional</div></div><span class="pill p-spot">Solo Spot</span></div><div class="carrier-cb"><div class="carrier-stat"><span class="cs-lbl">Contratos BSA</span><span class="cs-val" style="color:var(--muted)">Ninguno</span></div><div class="carrier-stat"><span class="cs-lbl">Reservas este mes</span><span class="cs-val">3</span></div><div class="carrier-stat"><span class="cs-lbl">Tarifa spot promedio</span><span class="cs-val">$1.95/kg</span></div><div class="carrier-stat"><span class="cs-lbl">Contacto</span><span class="cs-val">Miguel Torres</span></div><div class="carrier-stat"><span class="cs-lbl">Estado</span><span class="cs-val g">Activo</span></div><div class="route-tags"><span class="route-tag">GYE→BOG</span><span class="route-tag">UIO→LIM</span></div></div></div>
+      <div class="carrier-card" onclick="openModal('modal-carrier-detail')"><div class="carrier-ch"><div><div class="carrier-icon ci-maritimo"><i class="ti ti-ship"></i></div><div class="carrier-name">MSC</div><div class="carrier-type">Marítimo · Internacional</div></div><span class="pill p-bsa">BSA activo</span></div><div class="carrier-cb"><div class="carrier-stat"><span class="cs-lbl">Contratos BSA</span><span class="cs-val g">1 activo</span></div><div class="carrier-stat"><span class="cs-lbl">Reservas este mes</span><span class="cs-val">4</span></div><div class="carrier-stat"><span class="cs-lbl">Tarifa promedio</span><span class="cs-val">$1,200/TEU</span></div><div class="carrier-stat"><span class="cs-lbl">Contacto</span><span class="cs-val">Patricia Solano</span></div><div class="carrier-stat"><span class="cs-lbl">Estado</span><span class="cs-val g">Activo</span></div><div class="route-tags"><span class="route-tag">GYE→MIA</span><span class="route-tag">GYE→RTM</span></div></div></div>
+      <div class="carrier-card" onclick="openModal('modal-carrier-detail')"><div class="carrier-ch"><div><div class="carrier-icon ci-maritimo"><i class="ti ti-ship"></i></div><div class="carrier-name">Maersk</div><div class="carrier-type">Marítimo · Internacional</div></div><span class="pill p-spot">Solo Spot</span></div><div class="carrier-cb"><div class="carrier-stat"><span class="cs-lbl">Contratos BSA</span><span class="cs-val" style="color:var(--muted)">Ninguno</span></div><div class="carrier-stat"><span class="cs-lbl">Reservas este mes</span><span class="cs-val">2</span></div><div class="carrier-stat"><span class="cs-lbl">Tarifa spot promedio</span><span class="cs-val">$1,450/TEU</span></div><div class="carrier-stat"><span class="cs-lbl">Contacto</span><span class="cs-val">Roberto King</span></div><div class="carrier-stat"><span class="cs-lbl">Estado</span><span class="cs-val g">Activo</span></div><div class="route-tags"><span class="route-tag">GYE→AMS</span><span class="route-tag">GYE→HAM</span></div></div></div>
+      <div class="carrier-card" onclick="openModal('modal-carrier-detail')"><div class="carrier-ch"><div><div class="carrier-icon ci-terrestre"><i class="ti ti-truck"></i></div><div class="carrier-name">Servientrega</div><div class="carrier-type">Terrestre · Regional</div></div><span class="pill p-spot">Solo Spot</span></div><div class="carrier-cb"><div class="carrier-stat"><span class="cs-lbl">Contratos BSA</span><span class="cs-val" style="color:var(--muted)">No aplica</span></div><div class="carrier-stat"><span class="cs-lbl">Reservas este mes</span><span class="cs-val">6</span></div><div class="carrier-stat"><span class="cs-lbl">Tarifa promedio</span><span class="cs-val">$0.45/kg</span></div><div class="carrier-stat"><span class="cs-lbl">Contacto</span><span class="cs-val">Carmen Vega</span></div><div class="carrier-stat"><span class="cs-lbl">Estado</span><span class="cs-val g">Activo</span></div><div class="route-tags"><span class="route-tag">GYE→BOG</span><span class="route-tag">GYE→LIM</span></div></div></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- MODAL CONVERTIR -->
+<div class="modal-ov" id="modal-convertir"><div class="modal"><div class="modal-h"><div class="modal-title"><i class="ti ti-calendar-plus"></i> Crear reserva desde COT-2025-0838</div><div class="modal-close" onclick="closeModal('modal-convertir')"><i class="ti ti-x"></i></div></div><div class="modal-b"><div class="alert ok"><i class="ti ti-circle-check"></i> Cotización aprobada por el cliente. Al confirmar se creará la reserva y el sistema iniciará la validación de espacio.</div><div style="background:#F7F8FA;border-radius:9px;padding:14px 16px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:13px"><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Cliente</div><div style="font-weight:600">AgroExport S.A.</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Ruta</div><div style="font-weight:600">GYE → BOG · Terrestre</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Precio aprobado</div><div style="font-weight:700;color:var(--gd)">$1,080.00</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Producto</div><div style="font-weight:600">Brócoli · 720 kg</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Embarque</div><div style="font-weight:600">10 ago 2025</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Carrier tentativo</div><div style="font-weight:600">Servientrega</div></div></div><div class="fg c2"><div class="fld"><label class="lbl">Ejecutivo de reservas <span class="rq">*</span></label><select class="sel"><option>M. Estrella (yo)</option><option>R. Paredes</option><option>K. Guamán</option></select></div><div class="fld"><label class="lbl">Observaciones internas</label><input class="inp" type="text" placeholder="Notas para el equipo de reservas..."></div></div></div><div class="modal-f"><button class="btn sec" onclick="closeModal('modal-convertir')">Cancelar</button><button class="btn pri" onclick="closeModal('modal-convertir');showView('reservas')"><i class="ti ti-calendar-check"></i> Crear reserva RES-2025-0719</button></div></div></div>
+
+<!-- MODAL NUEVA COTIZACIÓN -->
+<div class="modal-ov" id="modal-nueva-cot"><div class="modal" style="max-width:700px"><div class="modal-h"><div class="modal-title"><i class="ti ti-file-invoice"></i> Nueva cotización manual</div><div class="modal-close" onclick="closeModal('modal-nueva-cot')"><i class="ti ti-x"></i></div></div><div class="modal-b"><div class="alert info"><i class="ti ti-info-circle"></i> Use esta opción cuando el cliente contacta por teléfono o correo y no ingresó la solicitud en el portal.</div><div class="fg c2"><div class="fld"><label class="lbl">Cliente <span class="rq">*</span></label><select class="sel"><option>Seleccionar...</option><option>Exportadora del Pacífico</option><option>Florisol Cía. Ltda.</option><option>AgroExport S.A.</option></select></div><div class="fld"><label class="lbl">Contacto del cliente</label><input class="inp" type="text" placeholder="Nombre del contacto"></div></div><div class="fg c3"><div class="fld"><label class="lbl">Modalidad <span class="rq">*</span></label><select class="sel"><option>Aérea</option><option>Marítima</option><option>Terrestre</option></select></div><div class="fld"><label class="lbl">Origen <span class="rq">*</span></label><select class="sel"><option>GYE — Guayaquil</option><option>UIO — Quito</option></select></div><div class="fld"><label class="lbl">Destino <span class="rq">*</span></label><select class="sel"><option>Seleccionar...</option><option>MIA — Miami</option><option>AMS — Ámsterdam</option><option>MAD — Madrid</option><option>BOG — Bogotá</option></select></div></div><div class="fg c3"><div class="fld"><label class="lbl">Producto <span class="rq">*</span></label><input class="inp" type="text" placeholder="Descripción"></div><div class="fld"><label class="lbl">Peso bruto (kg) <span class="rq">*</span></label><input class="inp" type="number" placeholder="0.00"></div><div class="fld"><label class="lbl">Embarque estimado <span class="rq">*</span></label><input class="inp" type="date"></div></div><div class="fg c2"><div class="fld"><label class="lbl">Unidad de carga</label><select class="sel"><option>Pallets</option><option>Cajas</option><option>Contenedor 20'</option><option>Contenedor 40'</option></select></div><div class="fld"><label class="lbl">Cantidad</label><input class="inp" type="number" placeholder="0"></div></div></div><div class="modal-f"><button class="btn sec" onclick="closeModal('modal-nueva-cot')">Cancelar</button><button class="btn pri" onclick="closeModal('modal-nueva-cot')"><i class="ti ti-arrow-right"></i> Continuar con cotización</button></div></div></div>
+
+<!-- MODAL CARRIER DETAIL -->
+<div class="modal-ov" id="modal-carrier-detail"><div class="modal"><div class="modal-h"><div class="modal-title"><i class="ti ti-truck"></i> Latam Cargo — Detalle y edición</div><div class="modal-close" onclick="closeModal('modal-carrier-detail')"><i class="ti ti-x"></i></div></div><div class="modal-b"><div class="fg c2"><div class="fld"><label class="lbl">Nombre carrier</label><input class="inp" type="text" value="Latam Cargo"></div><div class="fld"><label class="lbl">Modalidad</label><select class="sel"><option selected>Aéreo</option><option>Marítimo</option><option>Terrestre</option></select></div></div><div class="fg c2"><div class="fld"><label class="lbl">Contacto comercial</label><input class="inp" type="text" value="José Alvarado"></div><div class="fld"><label class="lbl">Email</label><input class="inp" type="email" value="jalvarado@latamcargo.com"></div></div><div class="fg c2"><div class="fld"><label class="lbl">Teléfono</label><input class="inp" type="text" value="+593 2 294 0000"></div><div class="fld"><label class="lbl">Estado</label><select class="sel"><option>Activo</option><option>Inactivo</option></select></div></div><div class="fg c1"><div class="fld"><label class="lbl">Rutas que opera</label><input class="inp" type="text" value="GYE→MIA, GYE→AMS, UIO→BOG, GYE→MAD"></div></div><div style="background:#F7F8FA;border-radius:8px;padding:12px 14px;font-size:12px"><strong style="font-size:10px;color:#bbb;text-transform:uppercase;letter-spacing:.5px">BSA activos</strong><div style="margin-top:8px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;align-items:center"><span>GYE → MIA · 20 ton/semana</span><span class="pill p-confirmado" style="font-size:10px">Vence 31-dic-2025</span></div><div style="display:flex;justify-content:space-between;align-items:center"><span>GYE → AMS · 20 ton/semana</span><span class="pill p-confirmado" style="font-size:10px">Vence 31-dic-2025</span></div></div></div></div><div class="modal-f"><button class="btn sec" onclick="closeModal('modal-carrier-detail')">Cancelar</button><button class="btn pri" onclick="closeModal('modal-carrier-detail')"><i class="ti ti-device-floppy"></i> Guardar cambios</button></div></div></div>
+
+<script>
+const navIds = ['dashboard','cotizaciones','reservas','capacity','carriers'];
+const viewTitles = {{
+  dashboard:['Tablero de control','Resumen operativo · 14 julio 2025'],
+  cotizaciones:['Cotizaciones','Solicitudes recibidas y cotizaciones en proceso'],
+  reservas:['Reservas','Gestión de reservas activas y cerradas'],
+  'detalle-reserva':['Detalle de reserva','RES-2025-0718 · Florisol Cía. Ltda.'],
+  capacity:['Capacity Planning','Ocupación de BSA y planificación semanal'],
+  carriers:['Carriers','Catálogo de transportistas']
+}};
+function showView(v){{
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  navIds.forEach(id=>document.getElementById('nav-'+id)?.classList.remove('on'));
+  const navTarget = v==='detalle-reserva'?'reservas':v;
+  document.getElementById('nav-'+navTarget)?.classList.add('on');
+  if(viewTitles[v]){{document.getElementById('page-title').textContent=viewTitles[v][0];document.getElementById('page-bc').innerHTML='<em>'+viewTitles[v][1]+'</em>';}}
+  window.scrollTo(0,0);
+}}
+function openModal(id){{document.getElementById(id).classList.add('open')}}
+function closeModal(id){{document.getElementById(id).classList.remove('open')}}
+function tog(bodyId,iconId){{const b=document.getElementById(bodyId);const ic=document.getElementById(iconId);const open=b.style.display!=='none';b.style.display=open?'none':'block';if(ic)ic.style.transform=open?'':' rotate(180deg)';}}
+function togBSA(id){{const el=document.getElementById(id);const ic=document.getElementById('i'+id);const open=el.style.display==='block';el.style.display=open?'none':'block';if(ic)ic.style.transform=open?'':' rotate(180deg)';}}
+let resultado=null;
+function setR(r){{resultado=r;['ok','no','alt'].forEach(id=>{{document.getElementById('r-'+id).className='rb';document.getElementById('panel-'+id).style.display='none';}});document.getElementById('r-'+r).className='rb '+(r==='ok'?'sg':'ss');document.getElementById('panel-'+r).style.display='block';}}
+function calcVar(){{const tarifaBase=1.85,peso=800,precioVenta=1480;let tNueva=0;if(resultado==='ok')tNueva=parseFloat(document.getElementById('inp-tc')?.value)||0;if(resultado==='alt')tNueva=parseFloat(document.getElementById('inp-ta')?.value)||0;if(tNueva<=0)return;const costoOrig=peso*tarifaBase;const costoNuevo=peso*tNueva;const varPct=((costoNuevo-costoOrig)/costoOrig)*100;const margenNuevo=((precioVenta-costoNuevo)/precioVenta)*100;const cls=varPct<=3?'ok':varPct<=10?'warn':'err';const verdicts={{ok:['ti-circle-check','ok','Variación dentro del umbral — el ejecutivo puede aprobar y continuar'],warn:['ti-alert-triangle','warn','Variación 3–10% — requiere aprobación del supervisor interno'],err:['ti-alert-circle','err','Variación &gt;10% — requiere re-aprobación formal del cliente']}};const[ic,vcls,txt]=verdicts[cls];const el=document.getElementById('var-result');if(el){{el.innerHTML=`<div class="var-box ${{cls}}"><div class="var-g4"><div><div class="var-lbl">Costo original</div><div class="var-val">$${{(peso*tarifaBase).toFixed(2)}}</div></div><div><div class="var-lbl">Costo real</div><div class="var-val ${{costoNuevo>costoOrig?'r':'g'}}">$${{costoNuevo.toFixed(2)}}</div></div><div><div class="var-lbl">Variación</div><div class="var-val ${{cls==='ok'?'g':cls==='warn'?'a':'r'}}">${{varPct>0?'+':''}}${{varPct.toFixed(1)}}%</div></div><div><div class="var-lbl">Margen resultante</div><div class="var-val ${{margenNuevo<3?'r':'g'}}">${{margenNuevo.toFixed(1)}}%</div></div></div><div class="var-verdict ${{vcls}}"><i class="ti ${{ic}}"></i> ${{txt}}</div></div>`;el.style.display='block';}};}}
+function confirmar(){{if(!resultado){{alert('Seleccione qué ocurrió con la solicitud al carrier.');return;}}const s3=document.getElementById('step3');s3.classList.remove('locked');s3.classList.add('active');s3.querySelector('.psn').className='psn active';s3.querySelector('.pst').textContent='3. Asignar carrier y registrar AWB / BL';s3.querySelector('.pss').textContent='En proceso — complete los datos del transporte';const lk=s3.querySelector('.psh>div:last-child');if(lk)lk.innerHTML='';s3.scrollIntoView({{behavior:'smooth',block:'center'}});}}
+function avanzarPaso4(){{const awb=document.getElementById('inp-awb')?.value;if(!awb){{alert('Ingrese el número AWB / BL antes de continuar.');return;}}const s4=document.getElementById('step4');s4.classList.remove('locked');s4.classList.add('active');s4.querySelector('.psn').className='psn active';calcVar();s4.scrollIntoView({{behavior:'smooth',block:'center'}});}}
+function cerrar(){{alert('Reserva cerrada. El cliente recibirá notificación automática con el AWB y fecha de embarque confirmada.');}}
+</script>
+</body>
+</html>
