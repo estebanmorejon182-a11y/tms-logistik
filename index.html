@@ -270,6 +270,7 @@ textarea.inp{height:72px;padding:9px 11px;resize:vertical;line-height:1.5}
 .cb-g{background:var(--g);opacity:.8} .cb-s{background:var(--s);opacity:.55}
 .chart-bv{font-size:10px;font-weight:700;color:var(--s)}
 .chart-bl{font-size:9px;color:var(--muted)}
+.kl{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
 /* DOCUMENTOS EN RESERVA */
 .doc-section{border:1px solid var(--bd);border-radius:9px;overflow:hidden;margin-top:14px}
 .doc-section-title{padding:12px 16px;background:#F7F8FA;border-bottom:1px solid var(--bd);font-size:12px;font-weight:700;color:var(--s);display:flex;align-items:center;justify-content:space-between}
@@ -588,7 +589,118 @@ textarea.inp{height:72px;padding:9px 11px;resize:vertical;line-height:1.5}
 
 <div class="modal-ov" id="m-nueva-cot"><div class="modal" style="max-width:700px"><div class="modal-h"><div class="modal-title"><i class="ti ti-file-invoice"></i> Nueva cotización manual</div><div class="modal-close" onclick="closeM('m-nueva-cot')"><i class="ti ti-x"></i></div></div><div class="modal-b"><div class="alert alert-info"><i class="ti ti-info-circle"></i> Use esta opción cuando el cliente contacta por teléfono o correo y no ingresó la solicitud en el portal.</div><div class="fg fg2"><div class="fld"><label class="lbl">Cliente <span class="rq">*</span></label><select class="sel"><option>Seleccionar...</option><option>Exportadora del Pacífico</option><option>Florisol Cía. Ltda.</option><option>AgroExport S.A.</option></select></div><div class="fld"><label class="lbl">Contacto del cliente</label><input class="inp" type="text" placeholder="Nombre del contacto"></div></div><div class="fg fg3"><div class="fld"><label class="lbl">Modalidad <span class="rq">*</span></label><select class="sel"><option>Aérea</option><option>Marítima</option><option>Terrestre</option></select></div><div class="fld"><label class="lbl">Origen <span class="rq">*</span></label><select class="sel"><option>GYE — Guayaquil</option><option>UIO — Quito</option></select></div><div class="fld"><label class="lbl">Destino <span class="rq">*</span></label><select class="sel"><option>Seleccionar...</option><option>MIA — Miami</option><option>AMS — Ámsterdam</option><option>MAD — Madrid</option><option>BOG — Bogotá</option></select></div></div><div class="fg fg3"><div class="fld"><label class="lbl">Producto <span class="rq">*</span></label><input class="inp" type="text" placeholder="Descripción del producto"></div><div class="fld"><label class="lbl">Peso bruto (kg) <span class="rq">*</span></label><input class="inp" type="number" placeholder="0.00"></div><div class="fld"><label class="lbl">Embarque estimado <span class="rq">*</span></label><input class="inp" type="date"></div></div></div><div class="modal-f"><button class="btn btn-sec" onclick="closeM('m-nueva-cot')">Cancelar</button><button class="btn btn-pri" onclick="closeM('m-nueva-cot')"><i class="ti ti-arrow-right"></i> Continuar</button></div></div></div>
 
-<div class="modal-ov" id="m-cotizacion"><div class="modal" style="max-width:680px"><div class="modal-h"><div class="modal-title"><i class="ti ti-file-invoice"></i> Generar cotización — SOL-2025-0044</div><div class="modal-close" onclick="closeM('m-cotizacion')"><i class="ti ti-x"></i></div></div><div class="modal-b"><div style="background:#F7F8FA;border-radius:9px;padding:12px 16px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;font-size:12px"><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Cliente</div><div style="font-weight:600">Florisol</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Ruta</div><div style="font-weight:600">UIO → MIA</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Producto</div><div style="font-weight:600">Rosas · 980 kg</div></div><div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Embarque</div><div style="font-weight:600">20 ago 2025</div></div></div><div style="background:var(--gl);border:1px solid rgba(128,186,39,.35);border-radius:8px;padding:11px 14px;font-size:12px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px"><i class="ti ti-circle-check" style="color:var(--g);font-size:18px;margin-top:1px;flex-shrink:0"></i><div><strong>BSA activo detectado</strong> — UIO › MIA · Latam Cargo · hasta 31-dic-2025<br><span style="font-size:11px;color:#555;margin-top:3px;display:block">Cupo disponible: <strong style="color:var(--gd)">8 ton</strong> de 20 ton esta semana</span></div></div><div class="fg fg3" style="margin-bottom:10px"><div class="fld"><label class="lbl">Tarifa BSA (USD/kg)</label><input class="inp inp-ro" type="text" value="1.85" readonly></div><div class="fld"><label class="lbl">Peso a cotizar (kg) <span class="rq">*</span></label><input class="inp" type="number" value="980" id="cot-peso" oninput="calcCot()"></div><div class="fld"><label class="lbl">Margen objetivo (%)</label><input class="inp" type="number" value="31" id="cot-mp" oninput="calcCot()"></div></div><div style="background:#F7F8FA;border-radius:8px;padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:8px"><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700" id="cot-costo">$1,813.00</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Costo operativo</div></div><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--gd)" id="cot-venta">$2,627.54</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Precio de venta</div></div><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--gd)" id="cot-margen">31%</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Margen bruto</div></div></div></div><div class="modal-f"><button class="btn btn-sec" onclick="closeM('m-cotizacion')">Cancelar</button><button class="btn btn-sec"><i class="ti ti-device-floppy"></i> Guardar borrador</button><button class="btn btn-pri" onclick="closeM('m-cotizacion')"><i class="ti ti-send"></i> Enviar al cliente</button></div></div></div>
+<div class="modal-ov" id="m-cotizacion"><div class="modal" style="max-width:760px"><div class="modal-h"><div class="modal-title"><i class="ti ti-file-invoice"></i> Generar cotización — SOL-2025-0044</div><div class="modal-close" onclick="closeM('m-cotizacion')"><i class="ti ti-x"></i></div></div><div class="modal-b">
+
+<!-- DATOS DE LA SOLICITUD -->
+<div style="background:#F7F8FA;border-radius:9px;padding:12px 16px;margin-bottom:16px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;font-size:12px">
+  <div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Cliente</div><div style="font-weight:600">Florisol Cía. Ltda.</div></div>
+  <div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Ruta</div><div style="font-weight:600">UIO → MIA</div></div>
+  <div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Modalidad</div><div style="font-weight:600">Aéreo</div></div>
+  <div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Producto / Peso</div><div style="font-weight:600">Rosas frescas · 980 kg</div></div>
+  <div><div style="font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;margin-bottom:2px">Embarque</div><div style="font-weight:600">20 ago 2025</div></div>
+</div>
+
+<!-- SECCIÓN 1: VALIDACIÓN DE MERCANCÍA -->
+<div style="border:1px solid var(--bd);border-radius:9px;overflow:hidden;margin-bottom:14px">
+  <div style="padding:10px 14px;background:#F5F6F8;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="togCotSec('val-merc','vi-merc')">
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#3A3A3A"><i class="ti ti-checklist" style="color:var(--g);font-size:14px"></i> Validación de mercancía</div>
+    <div style="display:flex;align-items:center;gap:8px"><span id="vm-badge" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--gl);color:var(--gd)">2 alertas</span><i class="ti ti-chevron-down" id="vi-merc" style="color:#bbb;font-size:13px;transition:transform .2s"></i></div>
+  </div>
+  <div id="val-merc" style="padding:14px">
+    <div style="font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Verificaciones automáticas</div>
+    <div class="cl">
+      <div class="ci aok"><div class="cd ok"><i class="ti ti-check" style="font-size:9px"></i></div><div class="ct2"><strong>CITES</strong> — Rosas frescas (Orden Rosales) no requiere permiso CITES</div><span class="ctag auto">AUTO</span></div>
+      <div class="ci aok"><div class="cd ok"><i class="ti ti-check" style="font-size:9px"></i></div><div class="ct2"><strong>AGROCALIDAD</strong> — Producto agrícola · Requiere certificado fitosanitario (ya solicitado)</div><span class="ctag auto">AUTO</span></div>
+      <div class="ci aok"><div class="cd ok"><i class="ti ti-check" style="font-size:9px"></i></div><div class="ct2"><strong>Ruta UIO→MIA</strong> — Sin restricciones de importación USDA para flores de corte</div><span class="ctag auto">AUTO</span></div>
+      <div class="ci awk"><div class="cd warn"><i class="ti ti-alert-triangle" style="font-size:9px"></i></div><div class="ct2"><strong>Temperatura controlada</strong> — Rosas requieren 2-8°C · confirmar disponibilidad de bodega fría con carrier</div><span class="ctag man">MANUAL</span></div>
+    </div>
+    <div style="font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px">Verificaciones manuales</div>
+    <div class="cl">
+      <div class="ci man" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;width:100%"><div class="cd pend">?</div><div class="ct2"><strong>Documentos SENAE</strong> — ¿Cliente tiene DAE emitida / en proceso?</div><span class="ctag man">MANUAL</span></div>
+        <div style="display:flex;gap:8px;margin-left:30px">
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="radio" name="senae" onchange="updVMBadge()"> Sí, tiene DAE</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="radio" name="senae" onchange="updVMBadge()"> En proceso</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="radio" name="senae" onchange="updVMBadge()"> No tiene aún</label>
+        </div>
+      </div>
+      <div class="ci man" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;width:100%"><div class="cd pend">?</div><div class="ct2"><strong>Carga sobredimensionada</strong> — ¿Alguna pieza supera 300 cm o 150 kg por unidad?</div><span class="ctag man">MANUAL</span></div>
+        <div style="display:flex;gap:8px;margin-left:30px">
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="radio" name="sobredim" onchange="updVMBadge()"> No</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="radio" name="sobredim" onchange="updVMBadge()"> Sí — requiere tarifa especial</label>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:7px;padding:8px 12px;font-size:11px;color:#1E3A8A;display:flex;gap:7px;margin-top:4px"><i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px;color:var(--info)"></i> Las verificaciones automáticas se calculan al momento de abrir la solicitud. Las manuales requieren confirmación del ejecutivo antes de generar la cotización.</div>
+  </div>
+</div>
+
+<!-- SECCIÓN 2: TIPO DE ESPACIO Y TARIFA -->
+<div style="border:1px solid var(--bd);border-radius:9px;overflow:hidden;margin-bottom:14px">
+  <div style="padding:10px 14px;background:#F5F6F8;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="togCotSec('val-tarifa','vi-tarifa')">
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#3A3A3A"><i class="ti ti-route-2" style="color:var(--g);font-size:14px"></i> Validación de espacio y tarifa</div>
+    <i class="ti ti-chevron-down" id="vi-tarifa" style="color:#bbb;font-size:13px;transition:transform .2s;transform:rotate(180deg)"></i>
+  </div>
+  <div id="val-tarifa" style="padding:14px;display:block">
+    <!-- BSA DETECTADO -->
+    <div class="bsa-status ok" style="margin-bottom:12px"><i class="ti ti-circle-check"></i><div><strong>BSA activo detectado</strong> — Latam Cargo · UIO → MIA · hasta 31-dic-2025<br><span style="font-size:11px;color:#555;margin-top:3px;display:block">Cupo disponible esta semana: <strong style="color:var(--gd)">8 ton</strong> de 20 ton · Tu carga (980 kg) cabe en BSA</span></div></div>
+    <!-- TOGGLE BSA / SPOT -->
+    <div style="font-size:11px;font-weight:700;color:#666;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Tipo de tarifa a aplicar</div>
+    <div class="tgl" style="margin-bottom:12px">
+      <button class="tglb bsa" id="tbsa" onclick="setTipo('bsa')"><i class="ti ti-contract"></i> BSA — Tarifa contratada</button>
+      <button class="tglb" id="tspot" onclick="setTipo('spot')"><i class="ti ti-receipt"></i> Spot — Mercado abierto</button>
+    </div>
+    <!-- PANEL BSA -->
+    <div id="panel-bsa" style="display:block">
+      <div class="resbox">
+        <div><div class="kv">$1.85</div><div class="kl">Tarifa BSA (USD/kg)</div></div>
+        <div><div class="kv" id="ct2-costo">$1,813.00</div><div class="kl">Costo operativo</div></div>
+        <div><div class="kv g" id="ct2-margen">31%</div><div class="kl">Margen objetivo</div></div>
+      </div>
+      <div class="fg fg3" style="margin-bottom:10px">
+        <div class="fld"><label class="lbl">Tarifa BSA (USD/kg)</label><input class="inp inp-ro" type="text" value="1.85" readonly></div>
+        <div class="fld"><label class="lbl">Peso (kg) <span class="rq">*</span></label><input class="inp" type="number" value="980" id="cot-peso" oninput="calcCot()"></div>
+        <div class="fld"><label class="lbl">Margen objetivo (%)</label><input class="inp" type="number" value="31" id="cot-mp" oninput="calcCot()"></div>
+      </div>
+    </div>
+    <!-- PANEL SPOT -->
+    <div id="panel-spot" style="display:none">
+      <div class="alert alert-warn" style="margin-bottom:12px"><i class="ti ti-alert-triangle"></i> Cotización Spot — ingrese la tarifa obtenida del carrier. El sistema validará el margen mínimo.</div>
+      <div class="fg fg2" style="margin-bottom:10px">
+        <div class="fld"><label class="lbl">Carrier consultado <span class="rq">*</span></label><select class="sel"><option value="">Seleccionar...</option><option>Latam Cargo</option><option>Avianca Cargo</option><option>Copa Airlines Cargo</option><option>American Airlines Cargo</option></select></div>
+        <div class="fld"><label class="lbl">Referencia de cotización</label><input class="inp" type="text" placeholder="Ej: REF-SPOT-12345"></div>
+      </div>
+      <div class="fg fg3" style="margin-bottom:10px">
+        <div class="fld"><label class="lbl">Tarifa Spot (USD/kg) <span class="rq">*</span></label><input class="inp" type="number" placeholder="0.00" id="cot-spot-kg" oninput="calcCotSpot()"><div style="font-size:10px;color:var(--muted);margin-top:3px">Rango ref.: $1.90–$2.40/kg</div></div>
+        <div class="fld"><label class="lbl">Peso (kg) <span class="rq">*</span></label><input class="inp" type="number" value="980" id="cot-spot-peso" oninput="calcCotSpot()"></div>
+        <div class="fld"><label class="lbl">Margen objetivo (%)</label><input class="inp" type="number" value="28" id="cot-spot-mp" oninput="calcCotSpot()"></div>
+      </div>
+      <div id="spot-result" style="display:none;background:#F7F8FA;border-radius:8px;padding:12px 14px;margin-bottom:4px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div><div class="kv" id="sp-costo">—</div><div class="kl">Costo Spot</div></div>
+          <div><div class="kv g" id="sp-venta">—</div><div class="kl">Precio de venta</div></div>
+          <div><div class="kv g" id="sp-margen">—</div><div class="kl">Margen bruto</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- RESULTADO FINAL -->
+    <div style="border-top:1px solid #F0F0F0;padding-top:12px;margin-top:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      <div style="background:#F7F8FA;border-radius:8px;padding:10px 12px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700" id="cot-costo">$1,813.00</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Costo operativo</div></div>
+      <div style="background:var(--gl);border-radius:8px;padding:10px 12px;border:1px solid rgba(128,186,39,.2)"><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--gd)" id="cot-venta">$2,627.54</div><div style="font-size:10px;color:#3A6010;text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Precio de venta sugerido</div></div>
+      <div style="background:#F7F8FA;border-radius:8px;padding:10px 12px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--gd)" id="cot-margen">31%</div><div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Margen bruto</div></div>
+    </div>
+    <div class="infonote" style="margin-top:10px;margin-bottom:0"><i class="ti ti-info-circle"></i> El precio de venta es editable antes de enviar. Si el margen resultante es menor al 20%, el sistema mostrará una alerta para que el supervisor revise.</div>
+  </div>
+</div>
+
+<!-- PRECIO EDITABLE Y NOTA -->
+<div class="fg fg2" style="margin-bottom:6px">
+  <div class="fld"><label class="lbl">Precio de venta final (USD) <span class="rq">*</span></label><input class="inp" type="number" value="2627.54" id="cot-venta-final" oninput="calcMFinal()"><div id="margen-final-note" style="font-size:11px;margin-top:3px;color:var(--gd);font-weight:600">Margen: 31.0% ✓</div></div>
+  <div class="fld"><label class="lbl">Notas para el cliente</label><textarea class="inp" style="height:60px" placeholder="Condiciones especiales, validez, etc."></textarea></div>
+</div>
+</div><div class="modal-f"><button class="btn btn-sec" onclick="closeM('m-cotizacion')">Cancelar</button><button class="btn btn-sec"><i class="ti ti-device-floppy"></i> Guardar borrador</button><button class="btn btn-pri" onclick="closeM('m-cotizacion')"><i class="ti ti-send"></i> Enviar al cliente</button></div></div></div>
+
 
 <div class="modal-ov" id="m-carrier"><div class="modal"><div class="modal-h"><div class="modal-title"><i class="ti ti-truck"></i> Latam Cargo — Detalle y edición</div><div class="modal-close" onclick="closeM('m-carrier')"><i class="ti ti-x"></i></div></div><div class="modal-b"><div class="fg fg2"><div class="fld"><label class="lbl">Nombre carrier</label><input class="inp" type="text" value="Latam Cargo"></div><div class="fld"><label class="lbl">Modalidad</label><select class="sel"><option>Aéreo</option><option>Marítimo</option><option>Terrestre</option></select></div></div><div class="fg fg2"><div class="fld"><label class="lbl">Contacto comercial</label><input class="inp" type="text" value="José Alvarado"></div><div class="fld"><label class="lbl">Email</label><input class="inp" type="email" value="jalvarado@latamcargo.com"></div></div><div class="fg fg2"><div class="fld"><label class="lbl">Teléfono</label><input class="inp" type="text" value="+593 2 294 0000"></div><div class="fld"><label class="lbl">Estado</label><select class="sel"><option>Activo</option><option>Inactivo</option></select></div></div><div class="fg fg1"><div class="fld"><label class="lbl">Rutas que opera</label><input class="inp" type="text" value="GYE→MIA, GYE→AMS, UIO→BOG, GYE→MAD"></div></div><div style="background:#F7F8FA;border-radius:8px;padding:12px 14px;font-size:12px"><strong style="font-size:10px;color:#bbb;text-transform:uppercase;letter-spacing:.5px">BSA activos</strong><div style="margin-top:8px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;align-items:center"><span>GYE → MIA · 20 ton/semana</span><span class="pill p-confirmado" style="font-size:10px">Vence 31-dic-2025</span></div><div style="display:flex;justify-content:space-between;align-items:center"><span>GYE → AMS · 20 ton/semana</span><span class="pill p-confirmado" style="font-size:10px">Vence 31-dic-2025</span></div></div></div></div><div class="modal-f"><button class="btn btn-sec" onclick="closeM('m-carrier')">Cancelar</button><button class="btn btn-pri" onclick="closeM('m-carrier')"><i class="ti ti-device-floppy"></i> Guardar cambios</button></div></div></div>
 
@@ -609,7 +721,12 @@ function confirmarEspacio(){if(!rdoVal){alert('Seleccione qué ocurrió con la s
 function avanzarP4(){var awb=document.getElementById('inp-awb').value;if(!awb){alert('Ingrese el número AWB / BL antes de continuar.');return}var s4=document.getElementById('ps4');s4.className='pstep pstep-active';s4.querySelector('.psn').className='psn psn-active';var lk=s4.querySelector('.psh>div:last-child');if(lk&&lk.querySelector){var sp=lk.querySelector('span');if(sp)sp.innerHTML=''}calcVariacion();s4.scrollIntoView({behavior:'smooth',block:'center'})}
 function cerrarReserva(){alert('Reserva cerrada. El cliente recibirá notificación con el AWB y documentos disponibles.')}
 function togDoc(btnId,inputId){var btn=document.getElementById(btnId);var isActive=btn.classList.contains('active');if(isActive){btn.classList.remove('active');btn.innerHTML='<i class="ti ti-eye-off"></i> Oculto'}else{var ref=document.getElementById(inputId).value;btn.classList.add('active');btn.innerHTML='<i class="ti ti-eye"></i> Visible'}}
-function calcCot(){var p=parseFloat(document.getElementById('cot-peso').value)||0;var m=parseFloat(document.getElementById('cot-mp').value)||31;var c=p>0?Math.max(p*1.85,450):0;var v=c>0?c/(1-m/100):0;document.getElementById('cot-costo').textContent=c>0?'$'+c.toFixed(2):'—';document.getElementById('cot-venta').textContent=v>0?'$'+v.toFixed(2):'—';document.getElementById('cot-margen').textContent=m+'%'}
+function togCotSec(bodyId,iconId){var el=document.getElementById(bodyId);var ic=document.getElementById(iconId);var open=el.style.display!=='none';el.style.display=open?'none':'block';if(ic)ic.style.transform=open?'':'rotate(180deg)'}
+function updVMBadge(){var badge=document.getElementById('vm-badge');if(badge)badge.style.background='var(--gl)',badge.style.color='var(--gd)',badge.textContent='Validado'}
+function setTipo(t){document.getElementById('panel-bsa').style.display=t==='bsa'?'block':'none';document.getElementById('panel-spot').style.display=t==='spot'?'block':'none';document.getElementById('tbsa').className='tglb'+(t==='bsa'?' bsa':'');document.getElementById('tspot').className='tglb'+(t==='spot'?' spot':'')}
+function calcCotSpot(){var tarifa=parseFloat(document.getElementById('cot-spot-kg').value)||0;var p=parseFloat(document.getElementById('cot-spot-peso').value)||0;var m=parseFloat(document.getElementById('cot-spot-mp').value)||28;if(tarifa<=0||p<=0)return;var c=tarifa*p;var v=c/(1-m/100);document.getElementById('sp-costo').textContent='$'+c.toFixed(2);document.getElementById('sp-venta').textContent='$'+v.toFixed(2);document.getElementById('sp-margen').textContent=m+'%';document.getElementById('spot-result').style.display='block';document.getElementById('cot-costo').textContent='$'+c.toFixed(2);document.getElementById('cot-venta').textContent='$'+v.toFixed(2);document.getElementById('cot-margen').textContent=m+'%';document.getElementById('cot-venta-final').value=v.toFixed(2);calcMFinal()}
+function calcMFinal(){var vf=parseFloat(document.getElementById('cot-venta-final').value)||0;var co=parseFloat((document.getElementById('cot-costo').textContent||'0').replace('$',''))||0;var note=document.getElementById('margen-final-note');if(vf<=0||co<=0)return;var m=((vf-co)/vf)*100;var ok=m>=20;note.textContent='Margen: '+m.toFixed(1)+'% '+(ok?'✓':'⚠ — por debajo del mínimo del 20%');note.style.color=ok?'var(--gd)':'var(--err)'}
+function calcCot(){var p=parseFloat(document.getElementById('cot-peso').value)||0;var m=parseFloat(document.getElementById('cot-mp').value)||31;var c=p>0?Math.max(p*1.85,450):0;var v=c>0?c/(1-m/100):0;document.getElementById('cot-costo').textContent=c>0?'$'+c.toFixed(2):'—';document.getElementById('cot-venta').textContent=v>0?'$'+v.toFixed(2):'—';document.getElementById('cot-margen').textContent=m+'%';document.getElementById('ct2-costo').textContent=c>0?'$'+c.toFixed(2):'—';document.getElementById('ct2-margen').textContent=m+'%';if(v>0){document.getElementById('cot-venta-final').value=v.toFixed(2);calcMFinal()}}
 </script>
 </body>
 </html>
