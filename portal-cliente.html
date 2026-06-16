@@ -1,8 +1,4 @@
-import { useState } from "react";
-
-// Vista previa del Portal Cliente (mockup real embebido, sin recrear).
-// Cambio aplicado: subtitulo del topbar "Portal Cliente" -> "Portal Prueba".
-const MOCKUP_HTML = String.raw`<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -373,30 +369,4 @@ function enviarSolicitud(){document.getElementById('form-solicitud').style.displ
 function resetSolicitud(){document.getElementById('form-solicitud').style.display='block';document.getElementById('solicitud-ok').style.display='none'}
 </script>
 </body>
-</html>`;
-
-export default function PortalClientePreview() {
-  const [reloadKey, setReloadKey] = useState(0);
-  return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "#F0F2F4", fontFamily: "system-ui, sans-serif" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 14px", background: "#fff", borderBottom: "1px solid #DDE1E7", flexShrink: 0 }}>
-        <div style={{ fontSize: 12, color: "#58585A" }}>
-          Vista previa &mdash; Portal Cliente (mockup real) &middot; cambio: <strong style={{ color: "#6FA320" }}>PORTAL PRUEBA</strong>
-        </div>
-        <button
-          onClick={() => setReloadKey((k) => k + 1)}
-          style={{ fontSize: 12, padding: "5px 12px", border: "1px solid #DDE1E7", borderRadius: 7, background: "#fff", color: "#58585A", cursor: "pointer" }}
-        >
-          Recargar
-        </button>
-      </div>
-      <iframe
-        key={reloadKey}
-        title="Portal Cliente - Vista previa"
-        srcDoc={MOCKUP_HTML}
-        sandbox="allow-scripts"
-        style={{ flex: 1, width: "100%", border: "none" }}
-      />
-    </div>
-  );
-}
+</html>
